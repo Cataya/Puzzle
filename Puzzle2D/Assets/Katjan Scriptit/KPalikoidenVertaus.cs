@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class KPalikoidenVertaus : MonoBehaviour {
 
-    public int[] blockArray1;
+	public GameObject[] cubeList;
+	public string myName; //name of the cube
+	public int factor=1; //factor, how many black cube need to add to the enemy's field 
 
 
-
-    void Update() {
-        //        if (block == stop) {
-        //        OnkoSamojaVieressa() 
+	void OnCollisionEnter ( Collision col){
+//		myName = collision.gameObject.name;
+//		OnkoSamojaVieressa(myName); 
         //     }
-        //  if (blockArray1.lenght>= 4){
-        //           blink 2 times first
-        //            Destroy blocks    
-        //          add black block to enemy 4-blockArroy1.lenght
+        //  if (cubeList.count >= 4){
+        //          blink 2 times
+        //          Destroy cubes    
+		//          add black cube(s) to enemy field (4-blockList.count * factor)
+		//			factor +=1
+		// 			if (cubeList.cout == 0){
+		//			factor = 1;
+		//			}
 
     }
 
-    void OnkoSamojaVieressa(int x, int y) {
-        //onko ylhäällä sama, jos on lisätään koordinaatit taulukkoon
-        // x+6 / x+1
-        //onko alhaalla sama, jos on lisätään koordinaatit taulukkoon
-        // x-6 / x-1
-        //onko vasemmalla sama, jos on lisätään koordinaatit taulukkoon
-        // x-1 / y-1
-        //onko oikealla sama, jos on lisätään koordinaatit taulukkoon
-        // x+1 / y +1
+	void OnkoSamojaVieressa(string myName) {
+		// if (myName = col.gameObject.name){
+		//		cubeList.add(GameObject);
+		//}
     }
 }
