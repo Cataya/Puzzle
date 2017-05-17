@@ -19,7 +19,7 @@ public class PlayerGrid : MonoBehaviour {
     List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
 
-    void Awake() {
+    void Awake() {  //(Teemu, Katja + Ykä)
         grid = new List<List<PuyoType>>(); // Muodostetaan lista-taulukko, johon tullaan tallentamaan tieto, onko ruudussa Puyo, jos on niin millainen puyo
         sprites = new List<List<GameObject>>(); // Muodostetaan lista-taulukko, johon tallennetaan millainen palikka piirretään mihinkin kohtaan
         for (int i = 0; i < nX; i++) { // luodaan niin monta taulukkoa kun on määritelty kentän leveydeksi
@@ -34,7 +34,7 @@ public class PlayerGrid : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start() {
+    void Start() { //(Teemu, Katja + Ykä)
         //grid[1][0] = PuyoType.Puyo1;
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
@@ -46,13 +46,13 @@ public class PlayerGrid : MonoBehaviour {
         AddPuyo(0, 5, PuyoType.Puyo3, y);
     }
 
-	public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)
+	public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
         grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
 
-    void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka 
+    void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
         float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
         float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
 
@@ -64,6 +64,7 @@ public class PlayerGrid : MonoBehaviour {
 
         }
     }
+    // Katja
     void RandomPuyo() {
         int index = Random.Range(0, randomizedPuyos.Length);
     }
