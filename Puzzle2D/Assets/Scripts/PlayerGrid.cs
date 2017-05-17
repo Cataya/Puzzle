@@ -14,6 +14,7 @@ public class PlayerGrid : MonoBehaviour {
     public Transform gridCenter; // Ruudukon keskipiste
 
     public GameObject[] debugSprites;
+    public GameObject[] randomizedPuyos;
 
     List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
@@ -62,5 +63,8 @@ public class PlayerGrid : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) {
 
         }
+    }
+    void RandomPuyo() {
+        int index = Random.Range(0, randomizedPuyos.Length);
     }
 }

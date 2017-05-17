@@ -79,8 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Katjan Scriptit\KPalikoidenVertaus.cs" />
-    <Compile Include="Assets\PlayerGrid.cs" />
     <Compile Include="Assets\Scripts\AnimationPrint.cs" />
+    <Compile Include="Assets\Scripts\PlayerGrid.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
