@@ -38,12 +38,10 @@ public class PlayerGrid : MonoBehaviour {
         //grid[1][0] = PuyoType.Puyo1;
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
-        var b = Instantiate(debugSprites[0]);
-        var r = Instantiate(debugSprites[1]);
-        var y = Instantiate(debugSprites[2]);
-        AddPuyo(0, 0, PuyoType.Puyo1, b);
-        AddPuyo(4, 0, PuyoType.Puyo2, r);
-        AddPuyo(0, 5, PuyoType.Puyo3, y);
+        TestGroups();
+        FindPuyoGroups(0,0);
+        
+
     }
 
 	public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
@@ -64,8 +62,30 @@ public class PlayerGrid : MonoBehaviour {
 
         }
     }
-    // Katja
-    void RandomPuyo() {
+    // Katja, kesken
+    GameObject RandomPuyo() {
         int index = Random.Range(0, randomizedPuyos.Length);
+        return gameObject;
+    }
+    //Katja, kesken
+    List<List<Vector2>> FindPuyoGroups(int x, int y) {
+//        List<List<Vector2>> groups = new List<List<Vector2>>();
+        var groups = new List<List<Vector2>>();
+        var puyo = grid[x][y];
+        print(puyo);
+        print(groups);
+        return groups;
+    }
+    //Katja, saa käyttää testaukseen
+    void TestGroups() {
+        var b = Instantiate(debugSprites[0]);
+        var r = Instantiate(debugSprites[1]);
+        var b2 = Instantiate(debugSprites[0]);
+        var r2 = Instantiate(debugSprites[1]);
+        var y = Instantiate(debugSprites[2]);
+        AddPuyo(0, 0, PuyoType.Puyo1, b2);
+        AddPuyo(1, 0, PuyoType.Puyo2, r2);
+        AddPuyo(1, 1, PuyoType.Puyo2, r);
+        AddPuyo(1, 2, PuyoType.Puyo1, b);
     }
 }
