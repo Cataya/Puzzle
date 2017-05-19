@@ -11,8 +11,6 @@ public class PlayerGrid : MonoBehaviour {
 
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
-    public Transform gridCenter; // Ruudukon keskipiste
-
     public GameObject[] debugSprites;
     public GameObject[] randomizedPuyos;
 
@@ -33,6 +31,9 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
+    void OnDrawGizmos() {
+        Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));        
+    }
     // Use this for initialization
     void Start() { //(Teemu, Katja + Ykä)
         //grid[1][0] = PuyoType.Puyo1;
@@ -54,7 +55,7 @@ public class PlayerGrid : MonoBehaviour {
         float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
         float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
 
-        Sprite.transform.position = new Vector3(worldX, worldY) + gridCenter.position; //Piirretään palikka
+        Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
     }
 	// Update is called once per frame
 	void Update () {
