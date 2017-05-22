@@ -40,8 +40,8 @@ public class PlayerGrid : MonoBehaviour {
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
         TestGroups();
-        FindPuyoGroups(0,0);
-        
+//K     FindPuyoGroups();
+//K		FindEmptyGrids();     
 
     }
 
@@ -64,19 +64,49 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
     // Katja, kesken
-    GameObject RandomPuyo() {
-        int index = Random.Range(0, randomizedPuyos.Length);
-        return gameObject;
-    }
-    //Katja, kesken
-    List<List<Vector2>> FindPuyoGroups(int x, int y) {
+//    GameObject RandomPuyo() {
+//        int index = Random.Range(0, randomizedPuyos.Length);
+//        return gameObject;
+//    }
+	//Katja, kesken; hahmotelmaa miten list-toimii
+//    List<List<Vector2>> FindPuyoGroups(int x, int y) {
 //        List<List<Vector2>> groups = new List<List<Vector2>>();
-        var groups = new List<List<Vector2>>();
-        var puyo = grid[x][y];
-        print(puyo);
-        print(groups);
-        return groups;
-    }
+//        var groups = new List<List<Vector2>>();
+//        var puyo = grid[x][y];
+//        print(puyo);
+//        print(groups);
+//        return groups;
+//    }
+	// Katja, kesken
+//	void FindPuyoGroups(){
+//		for (int i = 0; i < nY; i++) {
+//			for (int j = 0; j < nX; j++) {
+//				var aPuyo = grid[i][j];
+//				print ("a" + aPuyo);
+//				var bPuyo = grid [i + 1] [j];
+//				print("b" + bPuyo);
+//				var cPuyo = grid [i] [j + 1];
+//				print ("c" + cPuyo);
+//			}
+//		}
+//	}
+//Katja, kesken
+//	void FindEmptyGrids() {
+//		for (int i = 0; i < nY; i++) {
+//			for (int j = 0; j < nX; j++) {
+//				var aPuyo = grid[i][j];
+//				if (aPuyo == PuyoType.None) {
+//					var bPuyo = grid [i] [j /*+ 1*/];
+//					if (bPuyo !=PuyoType.None) {
+//						print (bPuyo);
+//						AddPuyo (i, j, PuyoType.bPuyo, y);
+//						AddPuyo (i, j + 1, PuyoType.None, y);
+//					}
+//				}
+//
+//			}
+//		}
+//	}
     //Katja, saa käyttää testaukseen
     void TestGroups() {
         var b = Instantiate(debugSprites[0]);
@@ -84,9 +114,10 @@ public class PlayerGrid : MonoBehaviour {
         var b2 = Instantiate(debugSprites[0]);
         var r2 = Instantiate(debugSprites[1]);
         var y = Instantiate(debugSprites[2]);
-        AddPuyo(0, 0, PuyoType.Puyo1, b2);
-        AddPuyo(1, 0, PuyoType.Puyo2, r2);
-        AddPuyo(1, 1, PuyoType.Puyo2, r);
-        AddPuyo(1, 2, PuyoType.Puyo1, b);
+        AddPuyo(0, 0, PuyoType.Puyo1, b);
+        AddPuyo(1, 0, PuyoType.Puyo2, r);
+        AddPuyo(1, 1, PuyoType.Puyo2, r2);
+        AddPuyo(1, 2, PuyoType.Puyo1, b2);
+		AddPuyo(3, 3, PuyoType.Puyo3, y);
     }
 }

@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Katjan Scriptit\KPalikoidenVertaus.cs" />
      <Compile Include="Assets\Scripts\AnimationPrint.cs" />
+     <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PlayerGrid.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
