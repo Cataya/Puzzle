@@ -8,14 +8,23 @@ public class PlayerController : MonoBehaviour {
     public float debugX;
     public float debugY;
     public PlayerGrid grid;
-	// Use this for initialization
+    // Use this for initialization
 	void Start () {
         var g = Instantiate(debugSprite);
         sprite = g.transform;
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		
-	}
+        // liikuttaminen
+
+        // kääntäminen
+
+        // tippuminen (2)
+
+        // piirtäminen (1)
+        float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + debugX * grid.gridDistance;
+        float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + debugY * grid.gridDistance;
+
+        sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;
+    }
 }
