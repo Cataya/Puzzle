@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum PuyoType {None, Trash, Puyo1, Puyo2, Puyo3, Puyo4} // Millaisia puyoja meillä on olemassa
@@ -16,6 +17,7 @@ public class PlayerGrid : MonoBehaviour {
 
     List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
+    List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
 
     public float y { get; private set; }
     public float x { get; private set; }
@@ -43,7 +45,9 @@ public class PlayerGrid : MonoBehaviour {
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
          TestGroups();
-         FindPuyoGroups();
+         var g = FindPuyoGroups();
+         DebugPrint(g);
+
     }
 
 	public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
@@ -71,57 +75,72 @@ public class PlayerGrid : MonoBehaviour {
 //    }
 	//Katja, kesken; hahmotelmaa miten list-toimii
     List<List<Vector2>> FindPuyoGroups() {
-        List<List<Vector2>> groups = new List<List<Vector2>>();
-        //int gridx = (int)xy.x;
-        //int gridy = (int)xy.y;
-        ////var aPuyo = grid[gridx][gridy];
-        //var bPuyo = grid[gridx -][gridy];
-        //var cPuyo = grid[gridx][gridy+1];
-        //print("A" + aPuyo + "B" + bPuyo + "C" + cPuyo);
-
-        //      print(groups);
-
         // loopataan kaikki x, y läpi alhaalta ylös
         // jokaiselle x, y:
         for (int i=0; i < nY-1; i++) {
             for (int j = 0; j < nX-1 ; j++) {
-                var aPuyo = grid[i][j];
-                print("\nA" + aPuyo);
-                if (i > 0) {
-                    // vas = vasemmalla puyo samaa väriä?
-                    var bPuyo = grid[i-1][j];
-                    print("\nB" + bPuyo);
-                    if (aPuyo == bPuyo && aPuyo!= PuyoType.None && bPuyo!=PuyoType.None) {
-                        // -> lisätään nyk. vasemman gruuppiin
-                        print("\nVasemmalle" + aPuyo + bPuyo);
-                    }
-                }
-                if (j > 0) {
-                    // alh = alhaalla puyo samaa väriä?
-                    var cPuyo = grid[i][j-1];
-                    print("\nC" + cPuyo);
-                    if (aPuyo == cPuyo && aPuyo!=PuyoType.None && cPuyo!=PuyoType.None) {
-                        // -> lisätään nyk. alagruuppiin
-                        print("\nAlas" + aPuyo + cPuyo);
-                    }
-                }
+                var aPuyo = grid[i][j]; //Nykyinen puyo
+                if (aPuyo == PuyoType.None) //Jos ruudussa ei ole puyoa niin ei tarvitse verrata viereisiin ruutuihin
+                    continue;
 
+                bool samePuyoLeft = i > 0 && aPuyo == grid[i - 1][j]; //Sama puyo vasemmalla
+                bool samePuyoDown = j > 0 && aPuyo == grid[i][j - 1]; //Sama puyo oikealla
+                bool samePuyoDownLeft = samePuyoLeft && samePuyoDown; //Sama puyo oikealla ja vasemmalla
+
+                if (samePuyoDownLeft) {
+                    //Jos alhaalla ja vasemmalla sama puyo yhdistetään taulukot
+
+                    foreach(var gl in groups) {
+                        bool foundGl = gl.Contains(new Vector2(i - 1, j));
+                            foreach (var gd in groups) {
+                                bool foundgd = gd.Contains(new Vector2(i, j - 1));
+                                if (foundgd && foundGl && gl == gd) {
+                                    gl.Add(new Vector2(i, j));
+                                } else if (foundGl && foundgd && gl != gd) {
+                                    gl.AddRange(gd);
+                                    gl.Add(new Vector2(i, j));
+                                    //groups.Remove(gd);
+                                }                            
+                            }
+                    }
+                } else if (samePuyoDown) {
+                    //Jos alhaalla on sama puyo niin lisätään taulukkoon
+                    foreach (var p in groups) {
+                        bool found = p.Contains(new Vector2(i, j - 1));
+                        if (found) {
+                            p.Add(new Vector2(i, j));
+                            break;
+                        }
+                    }   
+                    //Jos sama puyo vasemmalla niin lisätään taulukkoon  
+                } else if (samePuyoLeft) {
+                    print("\nVasemmalle");
+                    foreach (var p in groups) {
+                        bool found = p.Contains(new Vector2(i -1, j) );
+                        if (found) {
+                            p.Add(new Vector2(i, j));
+                            break;
+                        }      
+                    }
+                    //Jos ei samoja puyoja alhaalla, eikä ylhäällä niin tehdään taulukko mihin lisätään
+                } else {
+                    groups.Add(new List<Vector2>());
+                    groups[groups.Count - 1].Add(new Vector2(i,j));
+                }
             }
         }
-
-        // 
-        // vas && alh ?
-        // -> yhdistetään gruupit, lisätään nyk.
-        // vas?
-        // -> lisätään nyk. vasemman gruuppiin
-        // alh?
-        // -> lisätään nyk. alagruuppiin
-        // ei kumpikaan?
-        // -> uusi gruuppi, nyk. siihen
-
         return groups;
     }
-
+    //Katjan, kesken
+ //   void MoreThanTreeInGroup() {
+ //       foreach (var g in groups) {
+ //           if (g.Count > 3) {
+ //               //Tuhotaan puyot groupista + objektit
+ //               //DebugPrint(g);
+ //               print("Löytyi yli 3 ryhmä");
+ //           }             
+ //       }
+ //   }
     //Katja, saa käyttää testaukseen
     void TestGroups() {
         var b = Instantiate(debugSprites[0]);
@@ -130,11 +149,25 @@ public class PlayerGrid : MonoBehaviour {
         var r2 = Instantiate(debugSprites[1]);
         var y = Instantiate(debugSprites[2]);
         var y2 = Instantiate(debugSprites[2]);
+        var r3 = Instantiate(debugSprites[1]);
+        var r4 = Instantiate(debugSprites[1]);
         AddPuyo(0, 0, PuyoType.Puyo1, b);
         AddPuyo(1, 0, PuyoType.Puyo2, r);
         AddPuyo(1, 1, PuyoType.Puyo2, r2);
         AddPuyo(1, 2, PuyoType.Puyo1, b2);
-		AddPuyo(3, 3, PuyoType.Puyo3, y);
-        AddPuyo(2, 3, PuyoType.Puyo3, y2);
+		AddPuyo(4, 1, PuyoType.Puyo3, y);
+        AddPuyo(4, 0, PuyoType.Puyo3, y2);
+        AddPuyo(0, 1, PuyoType.Puyo2, r3);
+        AddPuyo(0, 2, PuyoType.Puyo2, r4);
+        
+    }
+    void DebugPrint(List<List<Vector2>> g) {
+        foreach (var group in g) {
+            string s = "";
+            foreach (var cord in group) {
+                s += cord;
+            }
+            print(s);
+        }
     }
 }
