@@ -89,21 +89,28 @@ public class PlayerGrid : MonoBehaviour {
 
                 if (samePuyoDownLeft) {
                     //Jos alhaalla ja vasemmalla sama puyo yhdistetään taulukot
-
-                    foreach(var gl in groups) {
-                        bool foundGl = gl.Contains(new Vector2(i - 1, j));
-                            foreach (var gd in groups) {
-                                bool foundgd = gd.Contains(new Vector2(i, j - 1));
-                                if (foundgd && foundGl && gl == gd) {
-                                    gl.Add(new Vector2(i, j));
-                                } else if (foundGl && foundgd && gl != gd) {
-                                    gl.AddRange(gd);
-                                    gl.Add(new Vector2(i, j));
-                                    //groups.Remove(gd);
-                                }                            
-                            }
+                    List<Vector2> gl, gd;
+                    foreach (var g in groups) {
+                        if (g.Contains(new Vector2(i - 1, j))){
+                            gl = g;
+                        }
                     }
-                } else if (samePuyoDown) {
+                    foreach (var g in groups) {
+                        if (g.Contains(new Vector2(i, j - 1))) {
+                            gd = g;
+                        }
+                    }
+                            //  if (gl == gd) {
+                            //        gl.Add(new Vector2(i, j));
+                            //    }
+                            //    else if (foundGl && foundgd && gl != gd) {
+                            //        gl.AddRange(gd);
+                            //        gl.Add(new Vector2(i, j));
+                            //        groups.Remove(gd);
+                            //    }
+                            //}
+                        }
+                else if (samePuyoDown) {
                     //Jos alhaalla on sama puyo niin lisätään taulukkoon
                     foreach (var p in groups) {
                         bool found = p.Contains(new Vector2(i, j - 1));
