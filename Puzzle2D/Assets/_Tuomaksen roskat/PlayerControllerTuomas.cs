@@ -7,6 +7,8 @@ public class PlayerControllerTuomas : MonoBehaviour {
     Transform sprite;
     public float debugX;
     public float debugY;
+    private float defaultDebugX;
+    private float defaultDebugY;
     public PlayerGrid grid;
     public float velocity;
     
@@ -14,11 +16,20 @@ public class PlayerControllerTuomas : MonoBehaviour {
     GameObject g;
 
     void Start () {
+        defaultDebugX = debugX;
+        defaultDebugY = debugY;
+
         g = Instantiate(debugSprite);
         sprite = g.transform;
     }
 	
-	void Update () {
+	void Update () {          
+        //spawnaaminen
+        if (g == null) {
+            g = Instantiate(debugSprite);
+            sprite = g.transform;
+        }
+
         // liikuttaminen
 
         // kääntäminen
@@ -28,9 +39,11 @@ public class PlayerControllerTuomas : MonoBehaviour {
             GameObject d = Instantiate(g);
             Destroy(g);
             grid.AddPuyo((int)debugX, (int)debugY + 1, PuyoType.Puyo1, d);
+            debugX = defaultDebugX;
+            debugY = defaultDebugY;
         }
         if(!IsTherePuyoBelow()) {
-            debugY = debugY - velocity * Time.deltaTime;                    //Ohajataan spriten liikettä y-akselilla
+            debugY = debugY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
         }
 
         // piirtäminen (1)
