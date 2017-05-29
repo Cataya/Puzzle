@@ -30,7 +30,7 @@ public class PlayerControllerTuomas : MonoBehaviour {
             grid.AddPuyo((int)debugX, (int)debugY + 1, PuyoType.Puyo1, d);
         }
         if(!IsTherePuyoBelow()) {
-            debugY = debugY - velocity * Time.deltaTime;
+            debugY = debugY - velocity * Time.deltaTime;                    //Ohajataan spriten liikettä y-akselilla
         }
 
         // piirtäminen (1)
@@ -38,7 +38,7 @@ public class PlayerControllerTuomas : MonoBehaviour {
         float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + debugY * grid.gridDistance;
 
         if (g != null) {
-            sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;
+            sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
         }
     }
 
