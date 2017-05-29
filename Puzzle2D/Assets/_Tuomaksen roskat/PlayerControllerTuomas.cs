@@ -35,6 +35,6 @@ public class PlayerControllerTuomas : MonoBehaviour {
     }
 
     bool IsThereBlockBelow() {
-        return false;
+        return true;
     }
 }
