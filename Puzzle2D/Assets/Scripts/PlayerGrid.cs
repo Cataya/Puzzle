@@ -15,7 +15,8 @@ public class PlayerGrid : MonoBehaviour {
     public GameObject[] debugSprites;
     public GameObject[] randomizedPuyos;
 
-    List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
+    [HideInInspector]
+    public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
     List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
 
@@ -56,7 +57,7 @@ public class PlayerGrid : MonoBehaviour {
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
 
-    void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
+    public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
         float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
         float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
 
