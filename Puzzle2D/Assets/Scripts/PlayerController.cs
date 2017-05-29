@@ -32,6 +32,14 @@ public class PlayerController : MonoBehaviour {
 
         // liikuttaminen
 
+        // Puyon siirto vasemmalle
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            debugX = debugX - grid.gridDistance;
+        }
+        // Puyon siirto oikealla
+        if (Input.GetKeyDown(KeyCode.RightArrow)) {
+            debugX = debugX + grid.gridDistance;
+        }
         // kääntäminen
 
         // tippuminen (2)
