@@ -47,8 +47,8 @@ public class PlayerGrid : MonoBehaviour {
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
          TestGroups();
-         var g = FindPuyoGroups();
-         DebugPrint(g);
+         FindPuyoGroups();
+
 
     }
 
@@ -67,7 +67,7 @@ public class PlayerGrid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Space)) {
-
+            MoreThanThreeInGroups();
         }
     }
     // Katja, kesken
@@ -91,7 +91,7 @@ public class PlayerGrid : MonoBehaviour {
 
                 if (samePuyoDownLeft) {
                     //Jos alhaalla ja vasemmalla sama puyo yhdistetään taulukot
-                    List<Vector2> gl, gd;
+                    List<Vector2> gl= null, gd = null;
                     foreach (var g in groups) {
                         if (g.Contains(new Vector2(i - 1, j))){
                             gl = g;
@@ -102,16 +102,10 @@ public class PlayerGrid : MonoBehaviour {
                             gd = g;
                         }
                     }
-                            //  if (gl == gd) {
-                            //        gl.Add(new Vector2(i, j));
-                            //    }
-                            //    else if (foundGl && foundgd && gl != gd) {
-                            //        gl.AddRange(gd);
-                            //        gl.Add(new Vector2(i, j));
-                            //        groups.Remove(gd);
-                            //    }
-                            //}
-                        }
+                        gl.AddRange(gd);
+                        gl.Add(new Vector2(i, j));
+                        groups.Remove(gd);
+                    }
                 else if (samePuyoDown) {
                     //Jos alhaalla on sama puyo niin lisätään taulukkoon
                     foreach (var p in groups) {
@@ -141,15 +135,23 @@ public class PlayerGrid : MonoBehaviour {
         return groups;
     }
     //Katjan, kesken
- //   void MoreThanTreeInGroup() {
- //       foreach (var g in groups) {
- //           if (g.Count > 3) {
- //               //Tuhotaan puyot groupista + objektit
- //               //DebugPrint(g);
- //               print("Löytyi yli 3 ryhmä");
- //           }             
- //       }
- //   }
+    void MoreThanThreeInGroups() {
+        foreach (var g in groups) {
+            if (g.Count > 3) {
+                //Tuhotaan puyot groupista + objektit
+                print("Löytyi yli 3 ryhmä");
+                for (int i = 0; i < g.Count; i++) {
+                    var temp = g[i];
+                    print(temp);
+                    var GO = sprites[(int)temp.x][(int)temp.y];
+                    sprites[(int)temp.x][(int)temp.y] = null;
+                    Destroy(GO);
+                    g.RemoveAt(i);
+                    i--;
+                }
+            }             
+        }
+    }
     //Katja, saa käyttää testaukseen
     void TestGroups() {
         var b = Instantiate(debugSprites[0]);
