@@ -1,4 +1,6 @@
 Puzzle2D/Library/
 Puzzle2D/Temp/
 *.sln
+*.csproj
+*.userprefs
 Puzzle2D/.vs/Puzzle2D/v15/.suo
