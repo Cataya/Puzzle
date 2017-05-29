@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerControllerTuomas : MonoBehaviour {
     public GameObject debugSprite;
     Transform sprite;
     public float debugX;
@@ -21,13 +21,20 @@ public class PlayerController : MonoBehaviour {
         // kääntäminen
 
         // tippuminen (2)
-        debugY = debugY - velocity * Time.deltaTime;
-
+        if (!IsThereBlockBelow()) {
+            debugY = debugY - velocity * Time.deltaTime;
+        }else {
+            velocity = 0;
+        }
         
         // piirtäminen (1)
         float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + debugX * grid.gridDistance;
         float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + debugY * grid.gridDistance;
 
         sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;
+    }
+
+    bool IsThereBlockBelow() {
+        return false;
     }
 }
