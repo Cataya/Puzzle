@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
     public float debugX;
     public float debugY;
     public PlayerGrid grid;
+    public float velocity;
     // Use this for initialization
 	void Start () {
         var g = Instantiate(debugSprite);
@@ -20,7 +21,8 @@ public class PlayerController : MonoBehaviour {
         // kääntäminen
 
         // tippuminen (2)
-
+        debugY = debugY - velocity * Time.deltaTime;
+        
         // piirtäminen (1)
         float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + debugX * grid.gridDistance;
         float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + debugY * grid.gridDistance;
