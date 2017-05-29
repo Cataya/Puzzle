@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
     public GameObject debugSprite;
-    Transform sprite;
     public float debugX;
     public float debugY;
     private float defaultDebugX;
@@ -14,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 
     //the falling test sprite
     GameObject g;
+    Transform sprite;
 
     void Start() {
         defaultDebugX = debugX;
@@ -44,9 +44,8 @@ public class PlayerController : MonoBehaviour {
 
         // tippuminen (2)
         if (IsTherePuyoBelow() && g != null) {
-            GameObject d = Instantiate(g);
-            Destroy(g);
-            grid.AddPuyo((int)debugX, (int)debugY + 1, PuyoType.Puyo1, d);
+            grid.AddPuyo((int)debugX, (int)debugY + 1, PuyoType.Puyo1, g);
+            g = null;
             debugX = defaultDebugX;
             debugY = defaultDebugY;
         }
@@ -64,11 +63,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     bool IsTherePuyoBelow() {
-        if (grid.grid[(int)debugX][(int)debugY] != PuyoType.None) {
-            print("There is indeed a muthafucking Puyo below!");
-            return true;
-        } else {
-            return false;
-        }
+        return grid.grid[(int)debugX][(int)debugY] != PuyoType.None;
     }
 }
