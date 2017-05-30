@@ -31,7 +31,14 @@ public class PlayerControllerTuomas : MonoBehaviour {
         }
 
         // liikuttaminen
-
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && debugX > 0)
+        { 
+            debugX = debugX - 1;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow) && debugX < 4)
+        {
+            debugX = debugX + 1;
+        }
         // kääntäminen
 
         // tippuminen (2)
