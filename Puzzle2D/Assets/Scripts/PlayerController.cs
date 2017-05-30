@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
     public GameObject debugSprite;
-    public float debugX;
-    public float debugY;
-    private float defaultDebugX;
-    private float defaultDebugY;
+    public float spawnX;
+    public float spawnY;
+    private float defaultSpawnX;
+    private float defaultSpawnY;
     public PlayerGrid grid;
     public float velocity;
 
@@ -16,8 +16,8 @@ public class PlayerController : MonoBehaviour {
     Transform sprite;
 
     void Start() {
-        defaultDebugX = debugX;
-        defaultDebugY = debugY;
+        defaultSpawnX = spawnX;
+        defaultSpawnY = spawnY;
 
         g = Instantiate(debugSprite);
         sprite = g.transform;
@@ -34,35 +34,35 @@ public class PlayerController : MonoBehaviour {
 
         // Puyon siirto vasemmalle
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            debugX = debugX - grid.gridDistance;
+            spawnX = spawnX - grid.gridDistance;
         }
         // Puyon siirto oikealla
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            debugX = debugX + grid.gridDistance;
+            spawnX = spawnX + grid.gridDistance;
         }
         // kääntäminen
 
         // tippuminen (2)
-        if (IsTherePuyoBelow() && g != null) {
-            grid.AddPuyo((int)debugX, (int)debugY + 1, PuyoType.Puyo1, g);
+        if (IsThereObstacleBelow() && g != null) {
+            grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo1, g);
             g = null;
-            debugX = defaultDebugX;
-            debugY = defaultDebugY;
+            spawnX = defaultSpawnX;
+            spawnY = defaultSpawnY;
         }
-        if (!IsTherePuyoBelow()) {
-            debugY = debugY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
+        if (!IsThereObstacleBelow()) {
+            spawnY = spawnY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
         }
 
         // piirtäminen (1)
-        float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + debugX * grid.gridDistance;
-        float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + debugY * grid.gridDistance;
+        float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX * grid.gridDistance;
+        float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY * grid.gridDistance;
 
         if (g != null) {
             sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
         }
     }
 
-    bool IsTherePuyoBelow() {
-        return grid.grid[(int)debugX][(int)debugY] != PuyoType.None;
+    bool IsThereObstacleBelow() {
+        return grid.grid[(int)spawnX][(int)spawnY] != PuyoType.None || g != null && g.transform.position.y < -2.6f;
     }
 }
