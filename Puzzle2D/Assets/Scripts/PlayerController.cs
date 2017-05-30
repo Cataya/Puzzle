@@ -63,6 +63,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     bool IsThereObstacleBelow() {
-        return grid.grid[(int)spawnX][(int)spawnY] != PuyoType.None || g != null && g.transform.position.y < -2.6f;
+        return grid.grid[(int)spawnX][(int)spawnY] != PuyoType.None || spawnY < 0;
     }
 }
