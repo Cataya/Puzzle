@@ -50,6 +50,8 @@
      <Compile Include="Assets\Scripts\AnimationPrint.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PlayerGrid.cs" />
+     <Compile Include="Assets\_Tuomaksen roskat\PlayerControllerTuomas.cs" />
+     <Compile Include="Assets\_Tuomaksen roskat\test.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
