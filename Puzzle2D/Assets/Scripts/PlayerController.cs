@@ -32,13 +32,14 @@ public class PlayerController : MonoBehaviour {
 
         // liikuttaminen
 
-        // Puyon siirto vasemmalle
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            spawnX = spawnX - grid.gridDistance;
+        // Puyon siirto oikealle ja vasemmalle
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX > 0)
+        {
+            spawnX = spawnX - 1;
         }
-        // Puyon siirto oikealla
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            spawnX = spawnX + grid.gridDistance;
+        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < 4)
+        {
+            spawnX = spawnX + 1;
         }
         // kääntäminen
 
