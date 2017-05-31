@@ -49,7 +49,6 @@ public class PlayerGrid : MonoBehaviour {
         //grid[1][1] = PuyoType.Puyo2;
         //print(grid[1][0]);
          TestGroups();
-         FindPuyoGroups();
 
 
     }
@@ -59,18 +58,18 @@ public class PlayerGrid : MonoBehaviour {
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
-    public void DropMatchRemove() {
-        pc.enabled = false;
-        bool removedGroups = false;
-            do {
+    public void DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
+        pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
+        bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
+            do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
             // DropPuyos();
-                var groups = FindPuyoGroups();
-                var groupsToRemove = MoreThanThreeInGroups(groups);
-                removedGroups = groupsToRemove.Count > 0;
-                RemoveGroups(groupsToRemove);
+                var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
+                var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
+                removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
+                RemoveGroups(groupsToRemove); // Kutsutan funktiota, joka poistaa peliobjektin ja muuttaa grid-taulukkoon tiedon, että ruudussa ei ole enään puyoa.
 
-            } while (removedGroups);
-        pc.enabled = true;
+            } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
+        pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
         }
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
@@ -152,7 +151,7 @@ public class PlayerGrid : MonoBehaviour {
         }
         return groups;
     }
-    //Katjan, kesken
+    //käydään annettu taulukko läpi ja tarkistetaan onko taulukossa enemmän kuin 3tietuetta
     List<List<Vector2>> MoreThanThreeInGroups(List<List<Vector2>> groups) {
         List<List<Vector2>> groupsToRemove = new List<List<Vector2>>();
         foreach (var g in groups) {
@@ -160,9 +159,9 @@ public class PlayerGrid : MonoBehaviour {
                 groupsToRemove.Add(g);
                 }
             }
-        return groupsToRemove;
+        return groupsToRemove; // Palautetaan taulukko, jossa on tiedot yli 3 puyoa olevista taulukoista
         }
-
+    //Käydään läpi taulukko, jossa on poistettavat puyo-ryhmät. Poistaa pelipobjectin ja muuttaa gridiin tiedon, että ko. ruudussa ei ole enään puyoa.
     void RemoveGroups(List<List<Vector2>> groupsToRemove) {
         for (int i = 0; i < groupsToRemove.Count; i++) {
             var group = groupsToRemove[i];
