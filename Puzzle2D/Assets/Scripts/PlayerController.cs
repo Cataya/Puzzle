@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour {
 
         // tippuminen (2)
         if (IsThereObstacleBelow() && g != null) {
-            grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo1, g);
+            grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo2, g);
             g = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;

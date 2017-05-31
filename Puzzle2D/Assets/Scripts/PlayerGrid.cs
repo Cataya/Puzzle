@@ -15,11 +15,13 @@ public class PlayerGrid : MonoBehaviour {
     public GameObject[] debugSprites;
     public GameObject[] randomizedPuyos;
 
+    public PlayerController pc;
+
     [HideInInspector]
     public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     [HideInInspector]
     public List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
-    List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
+
 
     public float y { get; private set; }
     public float x { get; private set; }
@@ -57,6 +59,19 @@ public class PlayerGrid : MonoBehaviour {
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
+    public void DropMatchRemove() {
+        pc.enabled = false;
+        bool removedGroups = false;
+            do {
+            // DropPuyos();
+                var groups = FindPuyoGroups();
+                var groupsToRemove = MoreThanThreeInGroups(groups);
+                removedGroups = groupsToRemove.Count > 0;
+                RemoveGroups(groupsToRemove);
+
+            } while (removedGroups);
+        pc.enabled = true;
+        }
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
         float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
@@ -66,9 +81,11 @@ public class PlayerGrid : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Space)) {
-            MoreThanThreeInGroups();
+            DropMatchRemove();
         }
+#endif
     }
     // Katja, kesken
 //    GameObject RandomPuyo() {
@@ -77,81 +94,89 @@ public class PlayerGrid : MonoBehaviour {
 //    }
 	//Katja, kesken; hahmotelmaa miten list-toimii
     List<List<Vector2>> FindPuyoGroups() {
+        List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
+
         // loopataan kaikki x, y läpi alhaalta ylös
         // jokaiselle x, y:
-        for (int i=0; i < nY-1; i++) {
-            for (int j = 0; j < nX-1 ; j++) {
-                var aPuyo = grid[i][j]; //Nykyinen puyo
+        for (int x=0; x < nX; x++) {
+            for (int y = 0; y < nY ; y++) {
+                var aPuyo = grid[x][y]; //Nykyinen puyo
                 if (aPuyo == PuyoType.None) //Jos ruudussa ei ole puyoa niin ei tarvitse verrata viereisiin ruutuihin
                     continue;
 
-                bool samePuyoLeft = i > 0 && aPuyo == grid[i - 1][j]; //Sama puyo vasemmalla
-                bool samePuyoDown = j > 0 && aPuyo == grid[i][j - 1]; //Sama puyo oikealla
+                bool samePuyoLeft = x > 0 && aPuyo == grid[x - 1][y]; //Sama puyo vasemmalla
+                bool samePuyoDown = y > 0 && aPuyo == grid[x][y - 1]; //Sama puyo oikealla
                 bool samePuyoDownLeft = samePuyoLeft && samePuyoDown; //Sama puyo oikealla ja vasemmalla
 
                 if (samePuyoDownLeft) {
                     //Jos alhaalla ja vasemmalla sama puyo yhdistetään taulukot
                     List<Vector2> gl= null, gd = null;
                     foreach (var g in groups) {
-                        if (g.Contains(new Vector2(i - 1, j))){
+                        if (g.Contains(new Vector2(x - 1, y))){
                             gl = g;
                         }
                     }
                     foreach (var g in groups) {
-                        if (g.Contains(new Vector2(i, j - 1))) {
+                        if (g.Contains(new Vector2(x, y - 1))) {
                             gd = g;
                         }
                     }
                         gl.AddRange(gd);
-                        gl.Add(new Vector2(i, j));
+                        gl.Add(new Vector2(x, y));
                         groups.Remove(gd);
                     }
                 else if (samePuyoDown) {
                     //Jos alhaalla on sama puyo niin lisätään taulukkoon
                     foreach (var p in groups) {
-                        bool found = p.Contains(new Vector2(i, j - 1));
+                        bool found = p.Contains(new Vector2(x, y - 1));
                         if (found) {
-                            p.Add(new Vector2(i, j));
+                            p.Add(new Vector2(x, y));
                             break;
                         }
                     }   
                     //Jos sama puyo vasemmalla niin lisätään taulukkoon  
                 } else if (samePuyoLeft) {
-                    print("\nVasemmalle");
                     foreach (var p in groups) {
-                        bool found = p.Contains(new Vector2(i -1, j) );
+                        bool found = p.Contains(new Vector2(x -1, y) );
                         if (found) {
-                            p.Add(new Vector2(i, j));
+                            p.Add(new Vector2(x, y));
                             break;
                         }      
                     }
                     //Jos ei samoja puyoja alhaalla, eikä ylhäällä niin tehdään taulukko mihin lisätään
                 } else {
                     groups.Add(new List<Vector2>());
-                    groups[groups.Count - 1].Add(new Vector2(i,j));
+                    groups[groups.Count - 1].Add(new Vector2(x,y));
                 }
             }
         }
         return groups;
     }
     //Katjan, kesken
-    void MoreThanThreeInGroups() {
+    List<List<Vector2>> MoreThanThreeInGroups(List<List<Vector2>> groups) {
+        List<List<Vector2>> groupsToRemove = new List<List<Vector2>>();
         foreach (var g in groups) {
             if (g.Count > 3) {
-                //Tuhotaan puyot groupista + objektit
-                print("Löytyi yli 3 ryhmä");
-                for (int i = 0; i < g.Count; i++) {
-                    var temp = g[i];
-                    print(temp);
-                    var GO = sprites[(int)temp.x][(int)temp.y];
-                    sprites[(int)temp.x][(int)temp.y] = null;
-                    Destroy(GO);
-                    g.RemoveAt(i);
-                    i--;
+                groupsToRemove.Add(g);
                 }
-            }             
+            }
+        return groupsToRemove;
         }
+
+    void RemoveGroups(List<List<Vector2>> groupsToRemove) {
+        for (int i = 0; i < groupsToRemove.Count; i++) {
+            var group = groupsToRemove[i];
+            while (group.Count > 0) {
+                var vector = group[0];
+                var GO = sprites[(int)vector.x][(int)vector.y];
+                sprites[(int)vector.x][(int)vector.y] = null;
+                Destroy(GO);
+                group.RemoveAt(0);
+                grid[(int)vector.x][(int)vector.y] = PuyoType.None;
+            }
     }
+}
+
     //Katja, saa käyttää testaukseen
     void TestGroups() {
         var b = Instantiate(debugSprites[0]);
