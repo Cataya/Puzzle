@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
         {
             spawnX = spawnX - 1;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < 4)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX -1)
         {
             spawnX = spawnX + 1;
         }
@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour {
             g = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;
+            grid.DropMatchRemove();
         }
         if (!IsThereObstacleBelow()) {
             spawnY = spawnY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla

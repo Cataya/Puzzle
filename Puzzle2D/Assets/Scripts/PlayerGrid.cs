@@ -86,11 +86,7 @@ public class PlayerGrid : MonoBehaviour {
         }
 #endif
     }
-    // Katja, kesken
-//    GameObject RandomPuyo() {
-//        int index = Random.Range(0, randomizedPuyos.Length);
-//        return gameObject;
-//    }
+
 	//Katja, kesken; hahmotelmaa miten list-toimii
     List<List<Vector2>> FindPuyoGroups() {
         List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
@@ -104,14 +100,14 @@ public class PlayerGrid : MonoBehaviour {
                     continue;
 
                 bool samePuyoLeft = x > 0 && aPuyo == grid[x - 1][y]; //Sama puyo vasemmalla
-                bool samePuyoDown = y > 0 && aPuyo == grid[x][y - 1]; //Sama puyo oikealla
-                bool samePuyoDownLeft = samePuyoLeft && samePuyoDown; //Sama puyo oikealla ja vasemmalla
+                bool samePuyoDown = y > 0 && aPuyo == grid[x][y - 1]; //Sama puyo alhaalla
+                bool samePuyoDownLeft = samePuyoLeft && samePuyoDown; //Sama puyo vasemmalla ja alhaalla
 
                 if (samePuyoDownLeft) {
                     //Jos alhaalla ja vasemmalla sama puyo yhdistetään taulukot
-                    List<Vector2> gl= null, gd = null;
+                    List<Vector2> gl = null, gd = null;
                     foreach (var g in groups) {
-                        if (g.Contains(new Vector2(x - 1, y))){
+                        if (g.Contains(new Vector2(x - 1, y))) {
                             gl = g;
                         }
                     }
@@ -120,11 +116,12 @@ public class PlayerGrid : MonoBehaviour {
                             gd = g;
                         }
                     }
+                    gl.Add(new Vector2(x, y));
+                    if (gl != gd) {
                         gl.AddRange(gd);
-                        gl.Add(new Vector2(x, y));
                         groups.Remove(gd);
-                    }
-                else if (samePuyoDown) {
+                    } 
+                } else if (samePuyoDown) {
                     //Jos alhaalla on sama puyo niin lisätään taulukkoon
                     foreach (var p in groups) {
                         bool found = p.Contains(new Vector2(x, y - 1));
@@ -188,7 +185,7 @@ public class PlayerGrid : MonoBehaviour {
         var r4 = Instantiate(debugSprites[1]);
         AddPuyo(0, 0, PuyoType.Puyo1, b);
         AddPuyo(1, 0, PuyoType.Puyo2, r);
-        AddPuyo(1, 1, PuyoType.Puyo2, r2);
+        //AddPuyo(1, 1, PuyoType.Puyo2, r2);
         AddPuyo(1, 2, PuyoType.Puyo1, b2);
 		AddPuyo(4, 1, PuyoType.Puyo3, y);
         AddPuyo(4, 0, PuyoType.Puyo3, y2);
