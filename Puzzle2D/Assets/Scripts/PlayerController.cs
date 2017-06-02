@@ -49,7 +49,8 @@ public class PlayerController : MonoBehaviour {
             g = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;
-            //grid.DropPuyos();
+            grid.DropPuyos();
+
         }
         if (!IsThereObstacleBelow()) {
             spawnY = spawnY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
