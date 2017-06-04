@@ -94,6 +94,14 @@ public class PlayerGrid : MonoBehaviour {
         if (dropping.Count > 0) {
             foreach (var p in dropping) {
                 print(p.x +", "+ p.y);
+				var droppingPuyo = grid[(int)p.x][(int)p.y];
+				grid [(int)p.x][(int)p.y-1] = droppingPuyo;
+				grid [(int)p.x][(int)p.y] = PuyoType.None;
+				var GO = sprites[(int)p.x][(int)p.y];
+				sprites[(int)p.x][(int)p.y] = null;
+				sprites[(int)p.x][(int)p.y-1] = GO;
+				Destroy(GO);
+
             }
         } else if (dropping.Count == 0){
             MatchRemove();
