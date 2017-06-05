@@ -17,6 +17,8 @@ public class PlayerGrid : MonoBehaviour {
 
     public PlayerController pc;
 
+    
+
     [HideInInspector]
     public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     [HideInInspector]
@@ -61,11 +63,11 @@ public class PlayerGrid : MonoBehaviour {
     }
     public void DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
+        WaitForAnimation();
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
+        // Wait for animation WaitForAnimation();
         do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
-            print("do-while alkaa");
             DropPuyos();
-            print("DropPuyos, done");
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
             var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
             removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
@@ -135,7 +137,6 @@ public class PlayerGrid : MonoBehaviour {
 
     List<List<Vector2>> FindPuyoGroups() {
         List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
-        print("käynnistyykö tämä funktio(findPuyoGroups)");
         // loopataan kaikki x, y läpi alhaalta ylös
         // jokaiselle x, y:
         for (int x=0; x < nX; x++) {
@@ -217,6 +218,10 @@ public class PlayerGrid : MonoBehaviour {
             }
     }
 }
+    IEnumerator WaitForAnimation() {
+        print("WaitForAnimation");
+        yield return null;
+    }
 
     //Katja, saa käyttää testaukseen
     void TestGroups() {
