@@ -42,74 +42,75 @@ public class PlayerGrid : MonoBehaviour {
     }
 
     void OnDrawGizmos() {
-        Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));        
+        Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));
     }
     // Use this for initialization
     void Start() { //(Teemu, Katja + Ykä)
-        //grid[1][0] = PuyoType.Puyo1;
-        //grid[1][1] = PuyoType.Puyo2;
-        //print(grid[1][0]);
-         TestGroups();
+                   //grid[1][0] = PuyoType.Puyo1;
+                   //grid[1][1] = PuyoType.Puyo2;
+                   //print(grid[1][0]);
+        TestGroups();
 
 
     }
 
-	public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
+    public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
         grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
-    public void MatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
+    public void DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
-            //do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
-                var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
-                var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
-                removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
-                RemoveGroups(groupsToRemove); // Kutsutan funktiota, joka poistaa peliobjektin ja muuttaa grid-taulukkoon tiedon, että ruudussa ei ole enään puyoa.
-            if (removedGroups) {
-                DropPuyos();
-            }
-           // } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
+        do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
+            print("do-while alkaa");
+            DropPuyos();
+            print("DropPuyos, done");
+            var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
+            var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
+            removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
+            RemoveGroups(groupsToRemove); // Kutsutan funktiota, joka poistaa peliobjektin ja muuttaa grid-taulukkoon tiedon, että ruudussa ei ole enään puyoa.
+                                          // if (removedGroups) {
+                                          //     DropPuyos();
+                                          //}
+        } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
         pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
-        }
+    }
     //Katja, kesken
     public void DropPuyos() {
 
         //löytää pudotettavat puyot
-        for (int x = 0; x<nX; x++) {
+        for (int x = 0; x < nX; x++) {
             for (int y = 0; y < nY; ++y) {
                 var puyoType = grid[x][y];
                 if (puyoType != PuyoType.None) {
+                    bool foundEmpty = false;
                     for (int i = y; i >= 0; i--) {
                         var emptyGrid = grid[x][i];
                         if (emptyGrid == PuyoType.None) {
-                            dropping.Add(new Vector2(x, y));
-                            //print("Kohta tippuu" + x + y);
+                            foundEmpty = true;
                         }
+                    }
+                    if (foundEmpty) {
+                        dropping.Add(new Vector2(x, y));
                     }
                 }
             }
         }
-        if (dropping.Count > 0) {
-            foreach (var p in dropping) {
-                print(p.x +", "+ p.y);
-				var droppingPuyo = grid[(int)p.x][(int)p.y];
-				grid [(int)p.x][(int)p.y-1] = droppingPuyo;
-				grid [(int)p.x][(int)p.y] = PuyoType.None;
-				var GO = sprites[(int)p.x][(int)p.y];
-                PlacePuyo((int)p.x, (int)p.y-(int) gridDistance, GO);
-                //GO.transform.position = new Vector3 (p.x, p.y- gridDistance);
-                sprites[(int)p.x][(int)p.y-1] = GO;
-                sprites[(int)p.x][(int)p.y] = null;
-				
-            }
-        } else if (dropping.Count == 0){
-            MatchRemove();
+        while (dropping.Count > 0) {
+            var p = dropping[0];
+            print("Alkutilanne: " + p.x + ", " + p.y);
+            var droppingPuyo = grid[(int)p.x][(int)p.y];
+            grid[(int)p.x][(int)p.y - 1] = droppingPuyo;
+            grid[(int)p.x][(int)p.y] = PuyoType.None;
+            var GO = sprites[(int)p.x][(int)p.y];
+            PlacePuyo((int)p.x, (int)p.y - 1, GO);
+            sprites[(int)p.x][(int)p.y - 1] = GO;
+            sprites[(int)p.x][(int)p.y] = null;
+            dropping.RemoveAt(0);
+            DropPuyos();
         }
     }
-    //        //jos on, tallennetaan oman luokan sprite listaan + gridin päivitys
-    //        //updatessa jos listassa on jotain niin liikutetaan niitä kunnes kaikki liikutettu sitten kutsutaan MatchRemove()
         
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
@@ -122,19 +123,19 @@ public class PlayerGrid : MonoBehaviour {
 	void Update () {
         if (dropping.Count != 0) {
             print("erisuuri");
-            dropping.RemoveAt(0);
+
 }
 
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Space)) {
-            MatchRemove();
+            DropMatchRemove();
         }
 #endif
     }
 
     List<List<Vector2>> FindPuyoGroups() {
         List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
-
+        print("käynnistyykö tämä funktio(findPuyoGroups)");
         // loopataan kaikki x, y läpi alhaalta ylös
         // jokaiselle x, y:
         for (int x=0; x < nX; x++) {
@@ -229,8 +230,8 @@ public class PlayerGrid : MonoBehaviour {
         var r4 = Instantiate(debugSprites[1]);
         AddPuyo(0, 0, PuyoType.Puyo1, b);
         AddPuyo(1, 0, PuyoType.Puyo2, r);
-        AddPuyo(0, 4, PuyoType.Puyo2, r2);
-        AddPuyo(0, 3, PuyoType.Puyo1, b2);
+        AddPuyo(0, 3, PuyoType.Puyo2, r2);
+        AddPuyo(0, 4, PuyoType.Puyo1, b2);
 		AddPuyo(3, 0, PuyoType.Puyo3, y);
         AddPuyo(0, 1, PuyoType.Puyo3, y2);
         AddPuyo(4, 0, PuyoType.Puyo2, r3);

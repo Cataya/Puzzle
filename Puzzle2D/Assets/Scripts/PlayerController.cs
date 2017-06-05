@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour {
             g = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;
-            grid.DropPuyos();
+            grid.DropMatchRemove();
 
         }
         if (!IsThereObstacleBelow()) {
