@@ -98,10 +98,11 @@ public class PlayerGrid : MonoBehaviour {
 				grid [(int)p.x][(int)p.y-1] = droppingPuyo;
 				grid [(int)p.x][(int)p.y] = PuyoType.None;
 				var GO = sprites[(int)p.x][(int)p.y];
-				sprites[(int)p.x][(int)p.y] = null;
-				sprites[(int)p.x][(int)p.y-1] = GO;
-				Destroy(GO);
-
+                PlacePuyo((int)p.x, (int)p.y-(int) gridDistance, GO);
+                //GO.transform.position = new Vector3 (p.x, p.y- gridDistance);
+                sprites[(int)p.x][(int)p.y-1] = GO;
+                sprites[(int)p.x][(int)p.y] = null;
+				
             }
         } else if (dropping.Count == 0){
             MatchRemove();
