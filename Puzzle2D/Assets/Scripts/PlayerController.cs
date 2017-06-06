@@ -33,11 +33,11 @@ public class PlayerController : MonoBehaviour {
         // liikuttaminen
 
         // Puyon siirto oikealle ja vasemmalle
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX > 0)
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX > 0 && !IsThereObstacleLeft())
         {
             spawnX = spawnX - 1;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX - 1)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX - 1 && !IsThereObstacleRight())
         {
             spawnX = spawnX + 1;
         }
