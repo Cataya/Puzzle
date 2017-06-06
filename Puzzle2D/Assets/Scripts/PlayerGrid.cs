@@ -61,13 +61,18 @@ public class PlayerGrid : MonoBehaviour {
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
     }
-    public void DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
+    public IEnumerator DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
-        WaitForAnimation();
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
         // Wait for animation WaitForAnimation();
         do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
-            DropPuyos();
+            bool found;
+            do {
+                found = DropPuyos();
+                if (found)
+                    yield return new WaitForSeconds(0.5f);
+            } while (found);
+
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
             var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
             removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
@@ -75,12 +80,14 @@ public class PlayerGrid : MonoBehaviour {
                                           // if (removedGroups) {
                                           //     DropPuyos();
                                           //}
+            if (removedGroups)
+                yield return new WaitForSeconds(0.5f);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
         pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
+        yield return null;
     }
     //Katja, kesken
-    public void DropPuyos() {
-
+    public bool DropPuyos() {
         //löytää pudotettavat puyot
         for (int x = 0; x < nX; x++) {
             for (int y = 0; y < nY; ++y) {
@@ -99,9 +106,10 @@ public class PlayerGrid : MonoBehaviour {
                 }
             }
         }
+        bool found = dropping.Count > 0;
         while (dropping.Count > 0) {
             var p = dropping[0];
-            print("Alkutilanne: " + p.x + ", " + p.y);
+            //print("Alkutilanne: " + p.x + ", " + p.y);
             var droppingPuyo = grid[(int)p.x][(int)p.y];
             grid[(int)p.x][(int)p.y - 1] = droppingPuyo;
             grid[(int)p.x][(int)p.y] = PuyoType.None;
@@ -110,8 +118,8 @@ public class PlayerGrid : MonoBehaviour {
             sprites[(int)p.x][(int)p.y - 1] = GO;
             sprites[(int)p.x][(int)p.y] = null;
             dropping.RemoveAt(0);
-            DropPuyos();
         }
+        return found;
     }
         
 
@@ -124,7 +132,7 @@ public class PlayerGrid : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (dropping.Count != 0) {
-            print("erisuuri");
+            //print("erisuuri");
 
 }
 
@@ -218,10 +226,6 @@ public class PlayerGrid : MonoBehaviour {
             }
     }
 }
-    IEnumerator WaitForAnimation() {
-        print("WaitForAnimation");
-        yield return null;
-    }
 
     //Katja, saa käyttää testaukseen
     void TestGroups() {

@@ -12,22 +12,22 @@ public class PlayerController : MonoBehaviour {
     public float velocity;
 
     //the falling test sprite
-    GameObject g;
-    Transform sprite;
+    GameObject g1, g2;
+    Transform sprite1, sprite2;
 
     void Start() {
         defaultSpawnX = spawnX;
         defaultSpawnY = spawnY;
 
-        g = Instantiate(debugSprite);
-        sprite = g.transform;
+        g1 = Instantiate(debugSprite);
+        sprite1 = g1.transform;
     }
 
     void Update() {
         //spawnaaminen
-        if (g == null) {
-            g = Instantiate(debugSprite);
-            sprite = g.transform;
+        if (g1 == null) {
+            g1 = Instantiate(debugSprite);
+            sprite1 = g1.transform;
         }
 
         // liikuttaminen
@@ -44,12 +44,12 @@ public class PlayerController : MonoBehaviour {
         // kääntäminen
 
         // tippuminen (2)
-        if (IsThereObstacleBelow() && g != null) {
-            grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo2, g);
-            g = null;
+        if (IsThereObstacleBelow() && g1 != null) {
+            grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo2, g1);
+            g1 = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;
-            grid.DropMatchRemove();
+            StartCoroutine(grid.DropMatchRemove());
 
         }
         if (!IsThereObstacleBelow()) {
@@ -60,8 +60,8 @@ public class PlayerController : MonoBehaviour {
         float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX * grid.gridDistance;
         float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY * grid.gridDistance;
 
-        if (g != null) {
-            sprite.transform.position = new Vector3(worldX, worldY) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
+        if (g1 != null) {
+            sprite1.transform.position = new Vector3(worldX, worldY) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
         }
     }
 
