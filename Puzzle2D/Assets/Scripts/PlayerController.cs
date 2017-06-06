@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
         {
             spawnX = spawnX - 1;
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX -1)
+        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX - 1)
         {
             spawnX = spawnX + 1;
         }
@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour {
     bool IsThereObstacleRight() {
         bool leftPuyo = false;
         if (spawnX < grid.nX ) {
-            leftPuyo = grid.grid[(int)spawnX + 1][(int)spawnY] != PuyoType.None;
+            leftPuyo = spawnX != grid.nX - 1 && grid.grid[(int)spawnX + 1][(int)spawnY] != PuyoType.None;       //Jos ei tarkisteta, että onko Puyo gridin reunalla niin seuraa ArgumentOutOfRange error kun yritetään tarkistaa onko gridin ulkopuolella este
         }
         return leftPuyo;
     }
