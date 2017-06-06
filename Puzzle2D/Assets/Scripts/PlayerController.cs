@@ -44,17 +44,29 @@ public class PlayerController : MonoBehaviour {
         // kääntäminen
 
         // tippuminen (2)
+
+        //Tarkistus onko alhaalla jotain edessä?
         if (IsThereObstacleBelow() && g1 != null) {
             grid.AddPuyo(Mathf.FloorToInt(spawnX), Mathf.FloorToInt(spawnY + 1), PuyoType.Puyo2, g1);
             g1 = null;
             spawnX = defaultSpawnX;
             spawnY = defaultSpawnY;
             StartCoroutine(grid.DropMatchRemove());
-
         }
-        if (!IsThereObstacleBelow()) {
+        if (!IsThereObstacleBelow()/* && IsThereObstacleLeft() && IsThereObstacleRigh()*/) {
             spawnY = spawnY - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
         }
+        //Tarkistus onko vasemmalla jotain edessä?
+        if (IsThereObstacleLeft() && g1 != null) {
+            print("Palikka edessä vasemmalla");
+            //******************************
+        }
+        //Tarkistus onko vasemmalla jotain edessä
+        if (IsThereObstacleRight() && g1 != null) {
+            print("Palikka edessä oikealla");
+            //******************************
+        }
+
 
         // piirtäminen (1)
         float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX * grid.gridDistance;
@@ -67,5 +79,19 @@ public class PlayerController : MonoBehaviour {
 
     bool IsThereObstacleBelow() {
         return grid.grid[(int)spawnX][(int)spawnY] != PuyoType.None || spawnY < 0;
+    }
+    bool IsThereObstacleLeft() {
+        bool rightPuyo = false;
+        if (spawnX > 0) {
+           rightPuyo = grid.grid[(int)spawnX - 1][(int)spawnY] != PuyoType.None;
+        }
+        return rightPuyo;
+    }
+    bool IsThereObstacleRight() {
+        bool leftPuyo = false;
+        if (spawnX < grid.nX ) {
+            leftPuyo = grid.grid[(int)spawnX + 1][(int)spawnY] != PuyoType.None;
+        }
+        return leftPuyo;
     }
 }
