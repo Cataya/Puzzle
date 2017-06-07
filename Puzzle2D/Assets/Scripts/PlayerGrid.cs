@@ -16,7 +16,7 @@ public class PlayerGrid : MonoBehaviour {
     public GameObject[] randomizedPuyos;
 
     public PlayerController pc;
-
+    public Audio audioScript;
     
 
     [HideInInspector]
@@ -223,9 +223,10 @@ public class PlayerGrid : MonoBehaviour {
                 Destroy(GO);
                 group.RemoveAt(0);
                 grid[(int)vector.x][(int)vector.y] = PuyoType.None;
+                audioScript.destroySource.Play();
             }
+        }
     }
-}
 
     //Katja, saa käyttää testaukseen
     void TestGroups() {

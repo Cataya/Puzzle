@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    public PlayerGrid grid;
+    public Audio audioScript;
+
     public GameObject debugSprite;
     public float spawnX;
     public float spawnY;
     private float defaultSpawnX;
     private float defaultSpawnY;
-    public PlayerGrid grid;
     public float velocity;
 
     //the falling test sprite
@@ -36,10 +38,12 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX > 0 && !IsThereObstacleLeft())
         {
             spawnX = spawnX - 1;
+            audioScript.moveSource.Play();
         }
         if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX < grid.nX - 1 && !IsThereObstacleRight())
         {
             spawnX = spawnX + 1;
+            audioScript.moveSource.Play();
         }
         // kääntäminen
 
