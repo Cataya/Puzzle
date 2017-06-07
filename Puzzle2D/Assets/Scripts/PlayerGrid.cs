@@ -230,22 +230,22 @@ public class PlayerGrid : MonoBehaviour {
 
     //Katja, saa käyttää testaukseen
     void TestGroups() {
-        var b = Instantiate(debugSprites[0]);
-        var r = Instantiate(debugSprites[1]);
-        var b2 = Instantiate(debugSprites[0]);
-        var r2 = Instantiate(debugSprites[1]);
-        var y = Instantiate(debugSprites[2]);
-        var y2 = Instantiate(debugSprites[2]);
-        var r3 = Instantiate(debugSprites[1]);
-        var r4 = Instantiate(debugSprites[1]);
-        AddPuyo(0, 0, PuyoType.Puyo1, b);
-        AddPuyo(1, 0, PuyoType.Puyo2, r);
-        AddPuyo(0, 3, PuyoType.Puyo2, r2);
-        AddPuyo(0, 4, PuyoType.Puyo1, b2);
-		AddPuyo(3, 0, PuyoType.Puyo3, y);
-        AddPuyo(0, 1, PuyoType.Puyo3, y2);
-        AddPuyo(4, 0, PuyoType.Puyo2, r3);
-        AddPuyo(0, 2, PuyoType.Puyo2, r4);
+  //      var b = Instantiate(debugSprites[0]);
+  //      var r = Instantiate(debugSprites[1]);
+  //      var b2 = Instantiate(debugSprites[0]);
+  //      var r2 = Instantiate(debugSprites[1]);
+  //      var y = Instantiate(debugSprites[2]);
+  //      var y2 = Instantiate(debugSprites[2]);
+  //      var r3 = Instantiate(debugSprites[1]);
+  //      var r4 = Instantiate(debugSprites[1]);
+  //      AddPuyo(0, 0, PuyoType.Puyo1, b);
+  //      AddPuyo(1, 0, PuyoType.Puyo2, r);
+  //      AddPuyo(0, 3, PuyoType.Puyo2, r2);
+  //      AddPuyo(0, 4, PuyoType.Puyo1, b2);
+		//AddPuyo(3, 0, PuyoType.Puyo3, y);
+  //      AddPuyo(0, 1, PuyoType.Puyo3, y2);
+  //      AddPuyo(4, 0, PuyoType.Puyo2, r3);
+  //      AddPuyo(0, 2, PuyoType.Puyo2, r4);
         
     }
     void DebugPrint(List<List<Vector2>> g) {

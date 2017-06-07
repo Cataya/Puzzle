@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class test : MonoBehaviour {
+public class test0 : MonoBehaviour {
     void Start() {
         Debug.Log(Mathf.Floor(10.0F));
         Debug.Log(Mathf.Floor(10.2F));
