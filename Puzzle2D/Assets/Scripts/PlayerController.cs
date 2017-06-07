@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-<<<<<<< HEAD
+
     public PlayerGrid grid;
     public Audio audioScript;
 
-    public GameObject debugSprite;
-    public float spawnX;
-    public float spawnY;
-    private float defaultSpawnX;
-    private float defaultSpawnY;
-=======
     public GameObject puyoSprite1,puyoSprite2;
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
     private float defaultSpawnX1, defaultSpawnX2;
     private float defaultSpawnY1, defaultSpawnY2;
-    public PlayerGrid grid;
->>>>>>> eb43842bbd1143f4c59cf3aa73d0326d904d0f58
     public float velocity;
 
     //the falling test sprite
@@ -54,19 +46,12 @@ public class PlayerController : MonoBehaviour {
         // Puyo1 siirto oikealle ja vasemmalle
         if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX1 > 0 && !IsThereObstacleLeft1())
         {
-<<<<<<< HEAD
-            spawnX = spawnX - 1;
-            audioScript.moveSource.Play();
-=======
             spawnX1 = spawnX1 - 1;
->>>>>>> eb43842bbd1143f4c59cf3aa73d0326d904d0f58
+            audioScript.moveSource.Play();
         }
         if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1())
         {
-<<<<<<< HEAD
-            spawnX = spawnX + 1;
             audioScript.moveSource.Play();
-=======
             spawnX1 = spawnX1 + 1;
         }
         // Puyo2 siirto oikealle ja vasemmalle
@@ -75,7 +60,6 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
             spawnX2 = spawnX2 + 1;
->>>>>>> eb43842bbd1143f4c59cf3aa73d0326d904d0f58
         }
         // kääntäminen
 
