@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour {
     public float spawnY1, spawnY2;
     private float defaultSpawnX1, defaultSpawnX2;
     private float defaultSpawnY1, defaultSpawnY2;
-    public float velocity;
+    public float defaultVelocity = 2f;
+	float velocity = 2f;
 
     //the falling test sprite
     GameObject g1, g2;
@@ -57,6 +58,9 @@ public class PlayerController : MonoBehaviour {
             spawnX1 = spawnX1 + 1;
 			spawnX2 = spawnX2 + 1;
         }
+		if (Input.GetKeyDown(KeyCode.DownArrow)){
+			velocity = velocity * 5;
+		}
         // Puyo2 siirto oikealle ja vasemmalle
 //        if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX2 > 0 && !IsThereObstacleLeft2()) {
 //            spawnX2 = spawnX2 - 1;
@@ -79,6 +83,7 @@ public class PlayerController : MonoBehaviour {
 			spawnX2 = defaultSpawnX2;
 			spawnY2 = defaultSpawnY2;
             StartCoroutine(grid.DropMatchRemove());
+			velocity = defaultVelocity;
         }
 //        if (IsThereObstacleBelow2() && g2 != null) {
 //            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
@@ -88,11 +93,11 @@ public class PlayerController : MonoBehaviour {
 //            StartCoroutine(grid.DropMatchRemove());
 //        }
 		if (!IsThereObstacleBelow1() || !IsThereObstacleBelow2()) {
-            spawnY1 = spawnY1 - velocity * Time.deltaTime;
+			spawnY1 = spawnY1 - velocity * Time.deltaTime;
 			spawnY2 = spawnY2 - velocity * Time.deltaTime; //Ohjataan spriten liikettä y-akselilla
 //        }
 //        if (!IsThereObstacleBelow2()/* && IsThereObstacleLeft() && IsThereObstacleRigh()*/) {
-//            spawnY2 = spawnY2 - velocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
+			//            spawnY2 = spawnY2 - defaultVelocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
 //        }
 
         // piirtäminen (1)
