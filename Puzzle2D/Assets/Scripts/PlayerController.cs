@@ -61,8 +61,9 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonDown("p1down") && p1 != null) {
             velocity *= 5; 
         }
-
-        ///////////////////////////////////////
+        if (Input.GetButtonUp("p1down")) {
+            velocity /= 5;
+        }
         if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && p2 != null) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
@@ -76,6 +77,12 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonDown("p2down") && p2 != null) {
             velocity *= 5;
         }
+        if (Input.GetButtonUp("p2down")) {
+            velocity /= 5;
+        }
+        //if (Input.GetButtonDown("p2down") && p2 != null) {
+        //    velocity *= 5;
+        //}
         // kääntäminen
 
         // tippuminen (2)
