@@ -9,6 +9,7 @@ public class PlayerGrid : MonoBehaviour {
 
     public int nX; // Leveys
     public int nY; // Korkeus
+    public float destroyDelay;
 
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
@@ -212,7 +213,7 @@ public class PlayerGrid : MonoBehaviour {
             }
         return groupsToRemove; // Palautetaan taulukko, jossa on tiedot yli 3 puyoa olevista taulukoista
         }
-    //Käydään läpi taulukko, jossa on poistettavat puyo-ryhmät. Poistaa pelipobjectin ja muuttaa gridiin tiedon, että ko. ruudussa ei ole enään puyoa.
+    //Käydään läpi taulukko, jossa on poistettavat puyo-ryhmät. Poistaa peliobjectin ja muuttaa gridiin tiedon, että ko. ruudussa ei ole enään puyoa.
     void RemoveGroups(List<List<Vector2>> groupsToRemove) {
         for (int i = 0; i < groupsToRemove.Count; i++) {
             var group = groupsToRemove[i];
@@ -220,7 +221,9 @@ public class PlayerGrid : MonoBehaviour {
                 var vector = group[0];
                 var GO = sprites[(int)vector.x][(int)vector.y];
                 sprites[(int)vector.x][(int)vector.y] = null;
-                Destroy(GO);
+                Animator animator = GO.GetComponent<Animator>();
+                animator.Play("Destruction");
+                Destroy(GO, destroyDelay);
                 group.RemoveAt(0);
                 grid[(int)vector.x][(int)vector.y] = PuyoType.None;
                 audioScript.destroySource.Play();
