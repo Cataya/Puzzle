@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour {
     private float defaultSpawnY1, defaultSpawnY2;
     public float defaultVelocity = 2f;
 	float velocity = 2f;
+    public GameObject p1;
+    public GameObject p2;
+
 
     //the falling test sprite
     GameObject g1, g2;
@@ -45,26 +48,40 @@ public class PlayerController : MonoBehaviour {
         // liikuttaminen
 
         // Puyo1 siirto oikealle ja vasemmalle
-        if (Input.GetButtonDown("left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2()) {
+        if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && p1 != null) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
             spawnX2 = spawnX2 - 1;
         }
-        if (Input.GetButtonDown("right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
+        if (Input.GetButtonDown("p1right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && p1!=null) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 + 1;
             spawnX2 = spawnX2 + 1;
         }
-        if (Input.GetButtonDown("down")) {
+        if (Input.GetButtonDown("p1down") && p1 != null) {
             velocity *= 5; 
         }
 
+        ///////////////////////////////////////
+        if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && p2 != null) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 - 1;
+            spawnX2 = spawnX2 - 1;
+        }
+        if (Input.GetButtonDown("p2right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && p2 != null) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 + 1;
+            spawnX2 = spawnX2 + 1;
+        }
+        if (Input.GetButtonDown("p2down") && p2 != null) {
+            velocity *= 5;
+        }
         // kääntäminen
 
         // tippuminen (2)
 
         //Tarkistus onko alhaalla jotain edessä?
-		if (IsThereObstacleBelow1() && g1 != null || IsThereObstacleBelow2() && g2 != null) {
+        if (IsThereObstacleBelow1() && g1 != null || IsThereObstacleBelow2() && g2 != null) {
             grid.AddPuyo(Mathf.FloorToInt(spawnX1), Mathf.FloorToInt(spawnY1 + 1), PuyoType.Puyo2, g1);
 			grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
 			g1 = null;
