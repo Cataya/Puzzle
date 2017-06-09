@@ -82,8 +82,10 @@ public class PlayerGrid : MonoBehaviour {
             if (removedGroups)
                 yield return new WaitForSeconds(0.5f);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
-        pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
-        yield return null;
+
+            pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
+            yield return null;
+        
     }
     //Katja, kesken
     public bool DropPuyos() {
@@ -229,8 +231,22 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-    //Katja, saa käyttää testaukseen
-    void TestGroups() {
+    bool IsGameOver() {
+        if (grid[(int)pc.defaultSpawnX1][(int)pc.defaultSpawnY1] !=PuyoType.None) {
+            GameOver(2);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    // G A M E   O V E R ! ! ! 
+    void GameOver(int player) {
+        print("Game Over!\n" + player + " Wins the battle");
+        enabled = false;
+        }
+        //Katja, saa käyttää testaukseen
+        void TestGroups() {
   //      var b = Instantiate(debugSprites[0]);
   //      var r = Instantiate(debugSprites[1]);
   //      var b2 = Instantiate(debugSprites[0]);

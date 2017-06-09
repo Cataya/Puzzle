@@ -11,8 +11,8 @@ public class PlayerController : MonoBehaviour {
     public GameObject puyoSprite1, puyoSprite2;
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
-    private float defaultSpawnX1, defaultSpawnX2;
-    private float defaultSpawnY1, defaultSpawnY2;
+    public float defaultSpawnX1, defaultSpawnX2;
+    public float defaultSpawnY1, defaultSpawnY2;
     public float defaultVelocity = 2f;
     float velocity = 2f;
     public PlayerController other;
@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update() {
+
+        
         //spawnaaminen
         if (g1 == null) {
             var generated = generator.GetNextPuyos(playerId);
