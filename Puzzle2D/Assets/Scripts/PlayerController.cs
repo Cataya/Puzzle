@@ -99,6 +99,7 @@ public class PlayerController : MonoBehaviour {
 			spawnY2 = defaultSpawnY2;
             StartCoroutine(grid.DropMatchRemove());
 			velocity = defaultVelocity;
+            audioScript.hitGroundSource.Play();
         }
 //        if (IsThereObstacleBelow2() && g2 != null) {
 //            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
