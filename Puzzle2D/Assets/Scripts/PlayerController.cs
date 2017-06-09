@@ -45,29 +45,20 @@ public class PlayerController : MonoBehaviour {
         // liikuttaminen
 
         // Puyo1 siirto oikealle ja vasemmalle
-		if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2())
-        {
-			audioScript.moveSource.Play();
-			spawnX1 = spawnX1 - 1;
-			spawnX2 = spawnX2 - 1;
-
+        if (Input.GetButtonDown("left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2()) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 - 1;
+            spawnX2 = spawnX2 - 1;
         }
-		if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2())
-        {
+        if (Input.GetButtonDown("right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 + 1;
-			spawnX2 = spawnX2 + 1;
+            spawnX2 = spawnX2 + 1;
         }
-		if (Input.GetKeyDown(KeyCode.DownArrow)){
-			velocity = velocity * 5;
-		}
-        // Puyo2 siirto oikealle ja vasemmalle
-//        if (Input.GetKeyDown(KeyCode.LeftArrow) && spawnX2 > 0 && !IsThereObstacleLeft2()) {
-//            spawnX2 = spawnX2 - 1;
-//        }
-//        if (Input.GetKeyDown(KeyCode.RightArrow) && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
-//            spawnX2 = spawnX2 + 1;
-//        }
+        if (Input.GetButtonDown("down")) {
+            velocity *= 5; 
+        }
+
         // kääntäminen
 
         // tippuminen (2)
