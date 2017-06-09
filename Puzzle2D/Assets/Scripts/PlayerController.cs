@@ -21,18 +21,12 @@ public class PlayerController : MonoBehaviour {
 
     //the falling test sprite
     GameObject g1, g2;
-    Transform sprite1, sprite2;
 
     void Start() {
         defaultSpawnX1 = spawnX1;
         defaultSpawnY1 = spawnY1;
         defaultSpawnX2 = spawnX2;
         defaultSpawnY2 = spawnY2;
-
-        //g1 = Instantiate(puyoSprite1);       
-        //g2 = Instantiate(puyoSprite2);
-        //sprite1 = g1.transform;
-        //sprite2 = g2.transform;
     }
 
     void Update() {
@@ -44,16 +38,9 @@ public class PlayerController : MonoBehaviour {
 
             g1 = generator.InstantiatePuyoSprite(spawnType1);
             g2 = generator.InstantiatePuyoSprite(spawnType2);
-
-
-            //            g1 = Instantiate(puyoSprite1);
-            sprite1 = g1.transform;
-            sprite2 = g2.transform;
         }
 
-        // liikuttaminen
-
-        // Puyo1 siirto oikealle ja vasemmalle
+        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
         if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
@@ -70,6 +57,7 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonUp("p1down") && playerId == 1) {
             velocity = defaultVelocity;
         }
+        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
         if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
@@ -87,12 +75,26 @@ public class PlayerController : MonoBehaviour {
             velocity = defaultVelocity;
         }
 
-        //if (Input.GetButtonDown("p2down") && p2 != null) {
-        //    velocity *= 5;
-        //}
         // kääntäminen
+        if (Input.GetButtonDown("p1swap") && playerId == 1) {
+            var tempSt1 = spawnType1;
+            spawnType1 = spawnType2;
+            spawnType2 = tempSt1;
+            var tempG1 = g1;
+            g1 = g2;
+            g2 = tempG1;
+        }
+        if (Input.GetButtonDown("p2swap") && playerId == 2) {
+            var tempSt1 = spawnType1;
+            spawnType1 = spawnType2;
+            spawnType2 = tempSt1;
+            var tempG1 = g1;
+            g1 = g2;
+            g2 = tempG1;
+        }
 
-        // tippuminen (2)
+
+
 
         //Tarkistus onko alhaalla jotain edessä?
         if (IsThereObstacleBelow1() && g1 != null || IsThereObstacleBelow2() && g2 != null) {
@@ -108,21 +110,11 @@ public class PlayerController : MonoBehaviour {
             StartCoroutine(grid.DropMatchRemove());
             velocity = defaultVelocity;
         }
-        //        if (IsThereObstacleBelow2() && g2 != null) {
-        //            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
-        //            g2 = null;
-        //            spawnX2 = defaultSpawnX2;
-        //            spawnY2 = defaultSpawnY2;
-        //            StartCoroutine(grid.DropMatchRemove());
-        //        }
+
         if (!IsThereObstacleBelow1() || !IsThereObstacleBelow2()) {
             spawnY1 = spawnY1 - velocity * Time.deltaTime;
             spawnY2 = spawnY2 - velocity * Time.deltaTime; //Ohjataan spriten liikettä y-akselilla
-                                                           //        }
-                                                           //        if (!IsThereObstacleBelow2()/* && IsThereObstacleLeft() && IsThereObstacleRigh()*/) {
-                                                           //            spawnY2 = spawnY2 - defaultVelocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
-                                                           //        }
-
+                                                           
             // piirtäminen (1)
             float worldX1 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
             float worldY1 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
@@ -132,10 +124,8 @@ public class PlayerController : MonoBehaviour {
 
 
             if (g1 != null) {
-                sprite1.transform.position = new Vector3(worldX1, worldY1) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
-            }
-            if (g2 != null) {
-                sprite2.transform.position = new Vector3(worldX2 + grid.gridDistance, worldY2) + grid.transform.position;
+                g1.transform.position = new Vector3(worldX1, worldY1) + grid.transform.position;          //Liikutetaan spritea
+                g2.transform.position = new Vector3(worldX2 + grid.gridDistance, worldY2) + grid.transform.position;
             }
         }
     }
