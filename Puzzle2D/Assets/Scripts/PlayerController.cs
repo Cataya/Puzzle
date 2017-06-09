@@ -6,17 +6,18 @@ public class PlayerController : MonoBehaviour {
 
     public PlayerGrid grid;
     public Audio audioScript;
+    public PuyoGenerator generator;
 
-    public GameObject puyoSprite1,puyoSprite2;
+    public GameObject puyoSprite1, puyoSprite2;
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
     private float defaultSpawnX1, defaultSpawnX2;
     private float defaultSpawnY1, defaultSpawnY2;
     public float defaultVelocity = 2f;
-	float velocity = 2f;
-    public GameObject p1;
-    public GameObject p2;
-
+    float velocity = 2f;
+    public PlayerController other;
+    public int playerId;
+    PuyoType spawnType1, spawnType2;
 
     //the falling test sprite
     GameObject g1, g2;
@@ -37,49 +38,55 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         //spawnaaminen
         if (g1 == null) {
-            g1 = Instantiate(puyoSprite1);
+            var generated = generator.GetNextPuyos(playerId);
+            spawnType1 = generated[0];
+            spawnType2 = generated[1];
+
+            g1 = generator.InstantiatePuyoSprite(spawnType1);
+            g2 = generator.InstantiatePuyoSprite(spawnType2);
+
+
+            //            g1 = Instantiate(puyoSprite1);
             sprite1 = g1.transform;
-        }
-        if (g2 == null) {
-            g2 = Instantiate(puyoSprite2);
             sprite2 = g2.transform;
         }
 
         // liikuttaminen
 
         // Puyo1 siirto oikealle ja vasemmalle
-        if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && p1 != null) {
+        if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
             spawnX2 = spawnX2 - 1;
         }
-        if (Input.GetButtonDown("p1right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && p1!=null) {
+        if (Input.GetButtonDown("p1right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 + 1;
             spawnX2 = spawnX2 + 1;
         }
-        if (Input.GetButtonDown("p1down") && p1 != null) {
-            velocity *= 5; 
-        }
-        if (Input.GetButtonUp("p1down")) {
-            velocity /= 5;
-        }
-        if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && p2 != null) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 - 1;
-            spawnX2 = spawnX2 - 1;
-        }
-        if (Input.GetButtonDown("p2right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && p2 != null) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 + 1;
-            spawnX2 = spawnX2 + 1;
-        }
-        if (Input.GetButtonDown("p2down") && p2 != null) {
+        if (Input.GetButtonDown("p1down") && playerId == 1) {
             velocity *= 5;
         }
-        if (Input.GetButtonUp("p2down")) {
-            velocity /= 5;
+        if (Input.GetButtonUp("p1down") && playerId == 1) {
+            velocity = defaultVelocity;
         }
+        if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 - 1;
+            spawnX2 = spawnX2 - 1;
+        }
+        if (Input.GetButtonDown("p2right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 2) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 + 1;
+            spawnX2 = spawnX2 + 1;
+        }
+        if (Input.GetButtonDown("p2down") && playerId == 2) {
+            velocity *= 5;
+        }
+        if (Input.GetButtonUp("p2down") && playerId == 2) {
+            velocity = defaultVelocity;
+        }
+
         //if (Input.GetButtonDown("p2down") && p2 != null) {
         //    velocity *= 5;
         //}
@@ -89,49 +96,49 @@ public class PlayerController : MonoBehaviour {
 
         //Tarkistus onko alhaalla jotain edessä?
         if (IsThereObstacleBelow1() && g1 != null || IsThereObstacleBelow2() && g2 != null) {
-            grid.AddPuyo(Mathf.FloorToInt(spawnX1), Mathf.FloorToInt(spawnY1 + 1), PuyoType.Puyo2, g1);
-			grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
-			g1 = null;
-			g2 = null;
+
+            grid.AddPuyo(Mathf.FloorToInt(spawnX1), Mathf.FloorToInt(spawnY1 + 1), spawnType1, g1);
+            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), spawnType2, g2);
+            g1 = null;
+            g2 = null;
             spawnX1 = defaultSpawnX1;
             spawnY1 = defaultSpawnY1;
-			spawnX2 = defaultSpawnX2;
-			spawnY2 = defaultSpawnY2;
+            spawnX2 = defaultSpawnX2;
+            spawnY2 = defaultSpawnY2;
             StartCoroutine(grid.DropMatchRemove());
-			velocity = defaultVelocity;
-            audioScript.hitGroundSource.Play();
+            velocity = defaultVelocity;
         }
-//        if (IsThereObstacleBelow2() && g2 != null) {
-//            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
-//            g2 = null;
-//            spawnX2 = defaultSpawnX2;
-//            spawnY2 = defaultSpawnY2;
-//            StartCoroutine(grid.DropMatchRemove());
-//        }
-		if (!IsThereObstacleBelow1() || !IsThereObstacleBelow2()) {
-			spawnY1 = spawnY1 - velocity * Time.deltaTime;
-			spawnY2 = spawnY2 - velocity * Time.deltaTime; //Ohjataan spriten liikettä y-akselilla
-//        }
-//        if (!IsThereObstacleBelow2()/* && IsThereObstacleLeft() && IsThereObstacleRigh()*/) {
-			//            spawnY2 = spawnY2 - defaultVelocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
-//        }
+        //        if (IsThereObstacleBelow2() && g2 != null) {
+        //            grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), PuyoType.Puyo1, g2);
+        //            g2 = null;
+        //            spawnX2 = defaultSpawnX2;
+        //            spawnY2 = defaultSpawnY2;
+        //            StartCoroutine(grid.DropMatchRemove());
+        //        }
+        if (!IsThereObstacleBelow1() || !IsThereObstacleBelow2()) {
+            spawnY1 = spawnY1 - velocity * Time.deltaTime;
+            spawnY2 = spawnY2 - velocity * Time.deltaTime; //Ohjataan spriten liikettä y-akselilla
+                                                           //        }
+                                                           //        if (!IsThereObstacleBelow2()/* && IsThereObstacleLeft() && IsThereObstacleRigh()*/) {
+                                                           //            spawnY2 = spawnY2 - defaultVelocity * Time.deltaTime;                    //Ohjataan spriten liikettä y-akselilla
+                                                           //        }
 
-        // piirtäminen (1)
-        float worldX1 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
-        float worldY1 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
-        float worldX2 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
-        float worldY2 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
- 
+            // piirtäminen (1)
+            float worldX1 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
+            float worldY1 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
+            float worldX2 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
+            float worldY2 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
 
 
-        if (g1 != null) {
-            sprite1.transform.position = new Vector3(worldX1, worldY1) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
-        }
-        if (g2 != null) {
-            sprite2.transform.position = new Vector3(worldX2 + grid.gridDistance, worldY2) + grid.transform.position;
+
+            if (g1 != null) {
+                sprite1.transform.position = new Vector3(worldX1, worldY1) + grid.transform.position;          //Liikutetaan spritea, riippuvainen debugY:n arvosta
+            }
+            if (g2 != null) {
+                sprite2.transform.position = new Vector3(worldX2 + grid.gridDistance, worldY2) + grid.transform.position;
+            }
         }
     }
-	}
     bool IsThereObstacleBelow1() {
         return grid.grid[(int)spawnX1][(int)spawnY1] != PuyoType.None || spawnY1 < 0;
     }
@@ -147,14 +154,14 @@ public class PlayerController : MonoBehaviour {
     }
     bool IsThereObstacleLeft2() {
         bool rightPuyo = false;
-            if (spawnX2 > 0) {
-                rightPuyo = grid.grid[(int)spawnX2 - 1][(int)spawnY2] != PuyoType.None;
-            }
+        if (spawnX2 > 0) {
+            rightPuyo = grid.grid[(int)spawnX2 - 1][(int)spawnY2] != PuyoType.None;
+        }
         return rightPuyo;
     }
     bool IsThereObstacleRight1() {
         bool leftPuyo = false;
-        if (spawnX1 < grid.nX ) {
+        if (spawnX1 < grid.nX) {
             leftPuyo = spawnX1 != grid.nX - 1 && grid.grid[(int)spawnX1 + 1][(int)spawnY1] != PuyoType.None;       //Jos ei tarkisteta, että onko Puyo gridin reunalla niin seuraa ArgumentOutOfRange error kun yritetään tarkistaa onko gridin ulkopuolella este
         }
         return leftPuyo;
