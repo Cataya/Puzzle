@@ -4,13 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PuyoType { None, Trash, Puyo1, Puyo2, Puyo3 } // Millaisia puyoja meillä on olemassa
+
 public class PuyoGenerator : MonoBehaviour {
     public int minimumInQueue = 5;
+
+    public GameObject[] PuyoSpritePrefabs;
 
     List<List<PuyoType>> p1puyos;
     List<List<PuyoType>> p2puyos;
 
-    static PuyoType[] generatorPool = { PuyoType.Puyo1, PuyoType.Puyo2, PuyoType.Puyo3, PuyoType.Puyo4 };
+    static PuyoType[] generatorPool = { PuyoType.Puyo1, PuyoType.Puyo2, PuyoType.Puyo3 };
 
     void Awake() {
         InitAtLevelStart();   
@@ -33,6 +37,10 @@ public class PuyoGenerator : MonoBehaviour {
     // true = player 1, false = player 2
     public List<PuyoType> PeekNextPuyos(int player, int index) {
         return (player == 1 ? p1puyos : p2puyos)[index];
+    }
+
+    public GameObject InstantiatePuyoSprite(PuyoType pt) {
+        return Instantiate(PuyoSpritePrefabs[(int)pt]);
     }
 
     void GenerateEnoughNewPuyos() {

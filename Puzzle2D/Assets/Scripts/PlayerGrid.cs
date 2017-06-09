@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum PuyoType {None, Trash, Puyo1, Puyo2, Puyo3, Puyo4} // Millaisia puyoja meillä on olemassa
 
 public class PlayerGrid : MonoBehaviour {
 
@@ -13,7 +12,6 @@ public class PlayerGrid : MonoBehaviour {
 
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
-    public GameObject[] debugSprites;
     public GameObject[] randomizedPuyos;
 
     public PlayerController pc;
