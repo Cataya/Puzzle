@@ -14,6 +14,7 @@ public class PlayerGrid : MonoBehaviour {
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
     int incomingTrash = 0;
+    int nextTrash = 0;
 
     public PlayerController pc;
     public GameManager gm;
@@ -116,24 +117,28 @@ public class PlayerGrid : MonoBehaviour {
     }
     void PlaceOwnTrash() {
         int trash = incomingTrash;
-        if (trash > 6) {
-            trash = 6;
+
+        if (trash > nX) {
+            trash = nX;
         }
         incomingTrash -= trash;
         for (int i = 0; i < trash; i++) {
-            if (grid[i][nY - 1] == PuyoType.None) {
-                grid[i][nY - 1] = PuyoType.Trash;
+            var i2 = (nextTrash + i) % nX;
+            if (grid[i2][nY - 1] == PuyoType.None) {
+               
+                grid[i2][nY - 1] = PuyoType.Trash;
                 var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
-                float worldX = -(nX - 1) / 2f * gridDistance + i * gridDistance;
+                float worldX = -(nX - 1) / 2f * gridDistance + i2 * gridDistance;
                 float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
                 g3.transform.position = new Vector3(worldX, worldY) + transform.position;
-                sprites[i][nY - 1] = g3;
+                sprites[i2][nY - 1] = g3;
             }
             else {
                 gm.GameOver(pc.playerId);
                 return;
             }
         }
+        nextTrash = (nextTrash + trash) % nX;
     }
 
     //Katja, kesken
