@@ -13,8 +13,8 @@ public class PlayerGrid : MonoBehaviour {
     public float dropTime = 0.2f;
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
-    int incomingTrash = 0;
-    int nextTrash = 0;
+    int incomingTrash = 0; //Tulevaa roskaa
+    int nextTrash = 0; //Seuraavien roskien aloituspaikka
 
     public PlayerController pc;
     public GameManager gm;
@@ -52,15 +52,14 @@ public class PlayerGrid : MonoBehaviour {
     }
 
     public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
-
             grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
             sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
             PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
 
     }
     public IEnumerator DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
-        int trashFactor = 1;
-        int trash = 0;
+        int trashFactor = 1; //roskakerroin
+        int trash = 0; // roskaa kierroksella
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
         // Wait for animation WaitForAnimation();
@@ -85,10 +84,7 @@ public class PlayerGrid : MonoBehaviour {
             trash += sum * trashFactor;
             trashFactor++;
             removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
-            RemoveGroups(groupsToRemove); // Kutsutan funktiota, joka poistaa peliobjektin ja muuttaa grid-taulukkoon tiedon, että ruudussa ei ole enään puyoa.
-                                          // if (removedGroups) {
-                                          //     DropPuyos();
-                                          //}
+            RemoveGroups(groupsToRemove); 
             if (removedGroups)
                 yield return new WaitForSeconds(destroyDelay);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
@@ -214,7 +210,7 @@ public class PlayerGrid : MonoBehaviour {
         for (int x = 0; x < nX; x++) {
             for (int y = 0; y < nY; y++) {
                 var aPuyo = grid[x][y]; //Nykyinen puyo
-                if (aPuyo == PuyoType.None) //Jos ruudussa ei ole puyoa niin ei tarvitse verrata viereisiin ruutuihin
+                if (aPuyo == PuyoType.None || aPuyo == PuyoType.Trash) //Jos ruudussa ei ole puyoa niin ei tarvitse verrata viereisiin ruutuihin
                     continue;
 
                 bool samePuyoLeft = x > 0 && aPuyo == grid[x - 1][y]; //Sama puyo vasemmalla

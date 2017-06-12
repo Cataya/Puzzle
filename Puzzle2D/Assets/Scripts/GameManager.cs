@@ -13,8 +13,7 @@ public class GameManager : MonoBehaviour {
             winner = 1;
         }
         print("Game Over\n Winner is player " + winner );
-
-        pc1.enabled = false;
+		pc1.enabled = false;
         pc2.enabled = false;
         enabled = false;
     }

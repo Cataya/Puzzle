@@ -49,8 +49,10 @@
      <Compile Include="Assets\Katjan Scriptit\KPalikoidenVertaus.cs" />
      <Compile Include="Assets\Scripts\AnimationPrint.cs" />
      <Compile Include="Assets\Scripts\Audio.cs" />
+     <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PlayerGrid.cs" />
+     <Compile Include="Assets\Scripts\PuyoGenerator.cs" />
      <Compile Include="Assets\_Tuomaksen roskat\PlayerControllerTuomas.cs" />
      <Compile Include="Assets\_Tuomaksen roskat\test0.cs" />
  <Reference Include="UnityEngine.UI">
