@@ -10,6 +10,7 @@ public class PlayerGrid : MonoBehaviour {
     public int nY; // Korkeus
     public float destroyDelay;
 
+    public float dropTime = 0.2f;
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
     public GameObject[] debugSprites;
@@ -17,7 +18,7 @@ public class PlayerGrid : MonoBehaviour {
     public PlayerController pc;
     public GameManager gm;
     public Audio audioScript;
-    
+
 
     [HideInInspector]
     public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
@@ -46,15 +47,6 @@ public class PlayerGrid : MonoBehaviour {
     void OnDrawGizmos() {
         Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));
     }
-    // Use this for initialization
-    void Start() { //(Teemu, Katja + Ykä)
-                   //grid[1][0] = PuyoType.Puyo1;
-                   //grid[1][1] = PuyoType.Puyo2;
-                   //print(grid[1][0]);
-        TestGroups();
-
-
-    }
 
     public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
 
@@ -72,7 +64,7 @@ public class PlayerGrid : MonoBehaviour {
             do {
                 found = DropPuyos();
                 if (found)
-                    yield return new WaitForSeconds(0.2f);
+                    yield return new WaitForSeconds(dropTime);
             } while (found);
 
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
@@ -83,12 +75,12 @@ public class PlayerGrid : MonoBehaviour {
                                           //     DropPuyos();
                                           //}
             if (removedGroups)
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(destroyDelay);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
 
-            pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
-            yield return null;
-        
+        pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
+        yield return null;
+
     }
     //Katja, kesken
     public bool DropPuyos() {
@@ -117,28 +109,30 @@ public class PlayerGrid : MonoBehaviour {
             var droppingPuyo = grid[(int)p.x][(int)p.y];
             grid[(int)p.x][(int)p.y - 1] = droppingPuyo;
             grid[(int)p.x][(int)p.y] = PuyoType.None;
-            var GO = sprites[(int)p.x][(int)p.y];           
-            PlacePuyo((int)p.x, (int)p.y - 1, GO);
+            var GO = sprites[(int)p.x][(int)p.y];
+
+            StartCoroutine(AnimateDrop((int)p.x, (int)p.y, GO));
+
             sprites[(int)p.x][(int)p.y - 1] = GO;
             sprites[(int)p.x][(int)p.y] = null;
             dropping.RemoveAt(0);
         }
         return found;
     }
-        
+
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
-        float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
+        float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance;
         float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
 
         Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
     }
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update() {
         if (dropping.Count != 0) {
             //print("erisuuri");
 
-}
+        }
 
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Space)) {
@@ -151,8 +145,8 @@ public class PlayerGrid : MonoBehaviour {
         List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
         // loopataan kaikki x, y läpi alhaalta ylös
         // jokaiselle x, y:
-        for (int x=0; x < nX; x++) {
-            for (int y = 0; y < nY ; y++) {
+        for (int x = 0; x < nX; x++) {
+            for (int y = 0; y < nY; y++) {
                 var aPuyo = grid[x][y]; //Nykyinen puyo
                 if (aPuyo == PuyoType.None) //Jos ruudussa ei ole puyoa niin ei tarvitse verrata viereisiin ruutuihin
                     continue;
@@ -178,7 +172,7 @@ public class PlayerGrid : MonoBehaviour {
                     if (gl != gd) {
                         gl.AddRange(gd);
                         groups.Remove(gd);
-                    } 
+                    }
                 } else if (samePuyoDown) {
                     //Jos alhaalla on sama puyo niin lisätään taulukkoon
                     foreach (var p in groups) {
@@ -187,20 +181,20 @@ public class PlayerGrid : MonoBehaviour {
                             p.Add(new Vector2(x, y));
                             break;
                         }
-                    }   
+                    }
                     //Jos sama puyo vasemmalla niin lisätään taulukkoon  
                 } else if (samePuyoLeft) {
                     foreach (var p in groups) {
-                        bool found = p.Contains(new Vector2(x -1, y) );
+                        bool found = p.Contains(new Vector2(x - 1, y));
                         if (found) {
                             p.Add(new Vector2(x, y));
                             break;
-                        }      
+                        }
                     }
                     //Jos ei samoja puyoja alhaalla, eikä ylhäällä niin tehdään taulukko mihin lisätään
                 } else {
                     groups.Add(new List<Vector2>());
-                    groups[groups.Count - 1].Add(new Vector2(x,y));
+                    groups[groups.Count - 1].Add(new Vector2(x, y));
                 }
             }
         }
@@ -212,10 +206,10 @@ public class PlayerGrid : MonoBehaviour {
         foreach (var g in groups) {
             if (g.Count > 3) {
                 groupsToRemove.Add(g);
-                }
             }
-        return groupsToRemove; // Palautetaan taulukko, jossa on tiedot yli 3 puyoa olevista taulukoista
         }
+        return groupsToRemove; // Palautetaan taulukko, jossa on tiedot yli 3 puyoa olevista taulukoista
+    }
     //Käydään läpi taulukko, jossa on poistettavat puyo-ryhmät. Poistaa peliobjectin ja muuttaa gridiin tiedon, että ko. ruudussa ei ole enään puyoa.
     void RemoveGroups(List<List<Vector2>> groupsToRemove) {
         for (int i = 0; i < groupsToRemove.Count; i++) {
@@ -234,30 +228,6 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-
-        //Katja, saa käyttää testaukseen
-        void TestGroups() {
-//              var b = Instantiate(debugSprites[0]);
-//                b.transform.position()
-        //      var r = Instantiate(debugSprites[1]);
-        //      var b2 = Instantiate(debugSprites[0]);
-        //      var r2 = Instantiate(debugSprites[1]);
-        //      var y = Instantiate(debugSprites[2]);
-        //      var y2 = Instantiate(debugSprites[2]);
-        //      var r3 = Instantiate(debugSprites[1]);
-        //      var r4 = Instantiate(debugSprites[1]);
-        //      float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance; 
-
-        //      AddPuyo(0, 0, PuyoType.Puyo1, b);
-        //      AddPuyo(1, 0, PuyoType.Puyo2, r);
-        //      AddPuyo(0, 3, PuyoType.Puyo2, r2);
-        //      AddPuyo(0, 4, PuyoType.Puyo1, b2);
-        //      AddPuyo(3, 0, PuyoType.Puyo3, y);
-        //      AddPuyo(0, 1, PuyoType.Puyo3, y2);
-        //      AddPuyo(4, 0, PuyoType.Puyo2, r3);
-        //      AddPuyo(0, 2, PuyoType.Puyo2, r4);
-
-    }
     void DebugPrint(List<List<Vector2>> g) {
         foreach (var group in g) {
             string s = "";
@@ -265,6 +235,22 @@ public class PlayerGrid : MonoBehaviour {
                 s += cord;
             }
             print(s);
+        }
+    }
+
+    IEnumerator AnimateDrop(int gridX, int gridY, GameObject GO) {
+        //We re-use code from PlacePuyo()
+        float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance;
+        float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
+
+        float t = 0f;
+        Vector3 oldPlace = new Vector3(worldX, worldY) + transform.position;
+        Vector3 newPlace = oldPlace - Vector3.up * gridDistance;
+
+        while (t <= dropTime) {
+            t += Time.deltaTime;
+            GO.transform.position = Vector3.Lerp(oldPlace, newPlace, Mathf.Clamp01(t / dropTime));
+            yield return null;
         }
     }
 }
