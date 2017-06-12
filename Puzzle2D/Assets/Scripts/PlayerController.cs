@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour {
     public Audio audioScript;
     public PuyoGenerator generator;
 
-    public GameObject puyoSprite1, puyoSprite2;
+    
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
     int defaultSpawnX1 = 2, defaultSpawnX2 = 3;

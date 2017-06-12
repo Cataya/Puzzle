@@ -12,11 +12,16 @@ public class PlayerGrid : MonoBehaviour {
 
     public float dropTime = 0.2f;
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
+                               //    public int trashPcs=0;
+                               //    public int trashFactor=1;
+                               //    public int trash;
 
-    public GameObject[] debugSprites;
+    //public GameObject puyoTrash;
+    int incomingTrash = 0;
 
     public PlayerController pc;
     public GameManager gm;
+    public PlayerGrid otherPG;
     public Audio audioScript;
 
 
@@ -48,6 +53,32 @@ public class PlayerGrid : MonoBehaviour {
         Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));
     }
 
+    public void AddTrash(int amount) {
+        print("Pelaajalle " + pc.playerId + " roskaa tulossa " + amount);
+        incomingTrash += amount; 
+        // kerro paljonko tulossa roskaa
+    }
+    void PlaceOwnTrash() {
+        int trash = incomingTrash;
+        if (trash > 6) {
+            trash = 6;
+        }
+        incomingTrash -= trash;
+        for (int i = 0; i < trash; i++) {
+            if (grid[i][nY - 1] == PuyoType.None) {
+                grid[i][nY - 1] = PuyoType.Trash;
+                var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
+                float worldX = -(nX - 1) / 2f * gridDistance + i * gridDistance;
+                float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
+                g3.transform.position = new Vector3(worldX, worldY) + transform.position;
+                sprites[i][nY - 1] = g3;
+            } else {
+                gm.GameOver(pc.playerId);
+                return;
+            }
+        }
+    }
+
     public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
 
             grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
@@ -56,6 +87,8 @@ public class PlayerGrid : MonoBehaviour {
 
     }
     public IEnumerator DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
+        int trashFactor = 1;
+        int trash = 0;
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
         // Wait for animation WaitForAnimation();
@@ -66,19 +99,33 @@ public class PlayerGrid : MonoBehaviour {
                 if (found)
                     yield return new WaitForSeconds(dropTime);
             } while (found);
-
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
             var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
+            int sum = 0;
+            foreach (var group in groupsToRemove) {
+                sum += group.Count -3;
+            }
+            trash += sum * trashFactor;
+            trashFactor++;
             removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
-            RemoveGroups(groupsToRemove); // Kutsutan funktiota, joka poistaa peliobjektin ja muuttaa grid-taulukkoon tiedon, että ruudussa ei ole enään puyoa.
-                                          // if (removedGroups) {
-                                          //     DropPuyos();
-                                          //}
+
+            RemoveGroups(groupsToRemove);
             if (removedGroups)
                 yield return new WaitForSeconds(destroyDelay);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
+        otherPG.AddTrash(trash); // push trash to other guy
+        PlaceOwnTrash();
+        // drop own trash
+        bool trashToDrop;
+        do {
+            trashToDrop = DropPuyos();
+            if (trashToDrop)
+                yield return new WaitForSeconds(dropTime);
+        } while (trashToDrop);
 
-        pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
+        if (gm.winner == 0) {
+            pc.enabled = true; //Palautetaan playerController toimimaan kun tämä funktio on ajettu.
+        }
         yield return null;
 
     }

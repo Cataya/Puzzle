@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public PlayerController pc1, pc2;
-    int winner;
+    public int winner;
     public void GameOver(int playerId) {
         if (playerId == 1) {
             winner = 2;
