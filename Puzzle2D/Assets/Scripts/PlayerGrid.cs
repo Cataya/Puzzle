@@ -25,6 +25,7 @@ public class PlayerGrid : MonoBehaviour {
     public List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
     List<Vector2> dropping = new List<Vector2>(); //Lista pudotettavista palikoista
 
+    public enum PuyoDropStatus { None, Drop, DropAndStop };
 
     //public float y { get; private set; }
     //public float x { get; private set; }
@@ -66,12 +67,16 @@ public class PlayerGrid : MonoBehaviour {
         bool removedGroups = false; //Apumuutuja, jolla seurataan miten pitkään suoritetaan do - while-lauseketta
         // Wait for animation WaitForAnimation();
         do { // Tehdään ainakin kerran, toistetaan niin kauan kuin while-kohdassa oleva ehto on tosi 
-            bool found;
+            PuyoDropStatus status = PuyoDropStatus.None;
             do {
-                found = DropPuyos();
-                if (found)
+                status = DropPuyos();
+                if (status == PuyoDropStatus.DropAndStop) {
                     yield return new WaitForSeconds(dropTime);
-            } while (found);
+                    audioScript.hitGroundSource.Play();
+                }
+                if (status == PuyoDropStatus.Drop)
+                    yield return new WaitForSeconds(dropTime);
+            } while (status != PuyoDropStatus.None);
 
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
             var groupsToRemove = MoreThanThreeInGroups(groups); //Tallennetaan muuttujaan funktion palautusarvo, jossa on puyo-ryhmät, joissa on vähintään 4 puyoa. Kutsussa annetaan edellisen funktion palautusarvo
@@ -89,7 +94,7 @@ public class PlayerGrid : MonoBehaviour {
 
     }
     //Katja, kesken
-    public bool DropPuyos() {
+    public PuyoDropStatus DropPuyos() {
         //löytää pudotettavat puyot
         for (int x = 0; x < nX; x++) {
             for (int y = 0; y < nY; ++y) {
@@ -109,6 +114,7 @@ public class PlayerGrid : MonoBehaviour {
             }
         }
         bool found = dropping.Count > 0;
+        bool stop = false;
         while (dropping.Count > 0) {
             var p = dropping[0];
             //print("Alkutilanne: " + p.x + ", " + p.y);
@@ -119,11 +125,17 @@ public class PlayerGrid : MonoBehaviour {
 
             StartCoroutine(AnimateDrop((int)p.x, (int)p.y, GO));
 
+            //If there's a Puyo/ground below the dropping puyo, return true to play sound
+            if (((int)p.y - 2) < 0 || grid[(int)p.x][(int)p.y - 2] != PuyoType.None) stop = true;
+
             sprites[(int)p.x][(int)p.y - 1] = GO;
             sprites[(int)p.x][(int)p.y] = null;
             dropping.RemoveAt(0);
         }
-        return found;
+        if (stop) return PuyoDropStatus.DropAndStop;
+        else if (found) return PuyoDropStatus.Drop;
+        else return PuyoDropStatus.None;
+
     }
 
 
