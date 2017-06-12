@@ -69,7 +69,7 @@ public class PlayerGrid : MonoBehaviour {
             do {
                 found = DropPuyos();
                 if (found)
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.2f);
             } while (found);
 
             var groups = FindPuyoGroups(); //Tallennetaan muuttujaan Funktion palautusarvo, jossa on kaikki puyo-ryhmät(vähintään 1 puyo)
@@ -114,7 +114,7 @@ public class PlayerGrid : MonoBehaviour {
             var droppingPuyo = grid[(int)p.x][(int)p.y];
             grid[(int)p.x][(int)p.y - 1] = droppingPuyo;
             grid[(int)p.x][(int)p.y] = PuyoType.None;
-            var GO = sprites[(int)p.x][(int)p.y];
+            var GO = sprites[(int)p.x][(int)p.y];           
             PlacePuyo((int)p.x, (int)p.y - 1, GO);
             sprites[(int)p.x][(int)p.y - 1] = GO;
             sprites[(int)p.x][(int)p.y] = null;
