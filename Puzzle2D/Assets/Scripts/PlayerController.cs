@@ -5,14 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     public PlayerGrid grid;
+    public GameManager gm;
     public Audio audioScript;
     public PuyoGenerator generator;
 
     public GameObject puyoSprite1, puyoSprite2;
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
-    public float defaultSpawnX1, defaultSpawnX2;
-    public float defaultSpawnY1, defaultSpawnY2;
+    int defaultSpawnX1 = 2, defaultSpawnX2 = 3;
+    int defaultSpawnY1 = 11, defaultSpawnY2= 11;
     public float defaultVelocity = 2f;
     float velocity = 2f;
     public PlayerController other;
@@ -22,18 +23,17 @@ public class PlayerController : MonoBehaviour {
     //the falling test sprite
     GameObject g1, g2;
 
-    void Start() {
-        defaultSpawnX1 = spawnX1;
-        defaultSpawnY1 = spawnY1;
-        defaultSpawnX2 = spawnX2;
-        defaultSpawnY2 = spawnY2;
-    }
-
     void Update() {
 
-        
-        //spawnaaminen
+
+        //spawnaaminen        }
         if (g1 == null) {
+            if (grid.grid[defaultSpawnX1][defaultSpawnY1] != PuyoType.None ||
+                grid.grid[defaultSpawnX2][defaultSpawnY2] != PuyoType.None )
+                {
+                gm.GameOver(playerId);
+                return;
+            }
             var generated = generator.GetNextPuyos(playerId);
             spawnType1 = generated[0];
             spawnType2 = generated[1];
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour {
             g2 = generator.InstantiatePuyoSprite(spawnType2);
         }
 
-        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
+        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja paikkojen vaihto
         if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;

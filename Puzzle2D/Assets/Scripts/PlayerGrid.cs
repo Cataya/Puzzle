@@ -13,9 +13,10 @@ public class PlayerGrid : MonoBehaviour {
     public float dropTime = 0.2f;
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
 
-    public GameObject[] randomizedPuyos;
+    public GameObject[] debugSprites;
 
     public PlayerController pc;
+    public GameManager gm;
     public Audio audioScript;
 
 
@@ -47,20 +48,13 @@ public class PlayerGrid : MonoBehaviour {
     void OnDrawGizmos() {
         Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));
     }
-    // Use this for initialization
-    void Start() { //(Teemu, Katja + Ykä)
-                   //grid[1][0] = PuyoType.Puyo1;
-                   //grid[1][1] = PuyoType.Puyo2;
-                   //print(grid[1][0]);
-        TestGroups();
-
-
-    }
 
     public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
-        grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
-        sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
-        PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
+
+            grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
+            sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
+            PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
+
     }
     public IEnumerator DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
         pc.enabled = false; // poistetaan playerController pois käytöstä kunnes funktio on ajettu(animaation vuoksi, peli "pauselle")
@@ -246,39 +240,6 @@ public class PlayerGrid : MonoBehaviour {
         }
     }
 
-    bool IsGameOver() {
-        if (grid[(int)pc.defaultSpawnX1][(int)pc.defaultSpawnY1] != PuyoType.None) {
-            GameOver(2);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    // G A M E   O V E R ! ! ! 
-    void GameOver(int player) {
-        print("Game Over!\n" + player + " Wins the battle");
-        enabled = false;
-    }
-    //Katja, saa käyttää testaukseen
-    void TestGroups() {
-        //      var b = Instantiate(debugSprites[0]);
-        //      var r = Instantiate(debugSprites[1]);
-        //      var b2 = Instantiate(debugSprites[0]);
-        //      var r2 = Instantiate(debugSprites[1]);
-        //      var y = Instantiate(debugSprites[2]);
-        //      var y2 = Instantiate(debugSprites[2]);
-        //      var r3 = Instantiate(debugSprites[1]);
-        //      var r4 = Instantiate(debugSprites[1]);
-        //      AddPuyo(0, 0, PuyoType.Puyo1, b);
-        //      AddPuyo(1, 0, PuyoType.Puyo2, r);
-        //      AddPuyo(0, 3, PuyoType.Puyo2, r2);
-        //      AddPuyo(0, 4, PuyoType.Puyo1, b2);
-        //AddPuyo(3, 0, PuyoType.Puyo3, y);
-        //      AddPuyo(0, 1, PuyoType.Puyo3, y2);
-        //      AddPuyo(4, 0, PuyoType.Puyo2, r3);
-        //      AddPuyo(0, 2, PuyoType.Puyo2, r4);
-
-    }
     void DebugPrint(List<List<Vector2>> g) {
         foreach (var group in g) {
             string s = "";
