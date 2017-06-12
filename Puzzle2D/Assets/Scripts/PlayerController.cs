@@ -103,6 +103,11 @@ public class PlayerController : MonoBehaviour {
 
             grid.AddPuyo(Mathf.FloorToInt(spawnX1), Mathf.FloorToInt(spawnY1 + 1), spawnType1, g1);
             grid.AddPuyo(Mathf.FloorToInt(spawnX2), Mathf.FloorToInt(spawnY2 + 1), spawnType2, g2);
+            Animator animator = g1.GetComponent<Animator>();
+            Animator animator2 = g2.GetComponent<Animator>();
+            animator.Play("Bounce");
+            animator2.Play("Bounce");
+            audioScript.hitGroundSource.Play();
             g1 = null;
             g2 = null;
             spawnX1 = defaultSpawnX1;
