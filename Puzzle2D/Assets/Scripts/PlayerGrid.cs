@@ -116,12 +116,11 @@ public class PlayerGrid : MonoBehaviour {
         for (int i = 0; i < trash; i++) {
             var i2 = (nextTrash + i) % nX;
             if (grid[i2][nY - 1] == PuyoType.None) {
-
                 grid[i2][nY - 1] = PuyoType.Trash;
                 var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
                 float worldX = -(nX - 1) / 2f * gridDistance + i2 * gridDistance;
                 float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
-                g3.transform.position = new Vector3(worldX, worldY) + transform.position;
+                g3.transform.position = new Vector3(worldX, worldY) + (transform.position *1000000000);
                 sprites[i2][nY - 1] = g3;
             } else {
                 gm.GameOver(pc.playerId);

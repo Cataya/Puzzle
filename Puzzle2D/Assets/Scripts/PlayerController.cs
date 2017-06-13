@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour {
     int defaultSpawnX1 = 2, defaultSpawnX2 = 3;
     int defaultSpawnY1 = 11, defaultSpawnY2 = 11;
     public float defaultVelocity = 2f;
-    float velocity = 2f;
+    public float velocity = 2f;
     public PlayerController other;
     public int playerId;
     PuyoType spawnType1, spawnType2;
