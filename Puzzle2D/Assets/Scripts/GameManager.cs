@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour {
         return;
     }
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             if (nextScene == "")//Jos seuraavaa kohtausta/kenttää ei ole määritelty
             {
                 nextScene = SceneManager.GetActiveScene().name;//Annetaan muuttujan nimeksi nykyisen kentän nimi
