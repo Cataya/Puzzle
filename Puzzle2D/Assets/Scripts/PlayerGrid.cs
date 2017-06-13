@@ -78,6 +78,58 @@ public class PlayerGrid : MonoBehaviour {
             PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
 
     }
+
+    public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
+        float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance;
+        float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
+
+        Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
+    }
+
+    void PlaceBridge(int x, int y, GameObject sprite, Vector3 rotation) { //Place a bridge prefab anywhere in the world based on grid coordinates
+        float worldX = -(nX - 1) / 2f * gridDistance + x * gridDistance;
+        float worldY = -(nY - 1) / 2f * gridDistance + x * gridDistance;
+
+        Instantiate(sprite);
+        sprite.transform.position = new Vector3(worldX, worldY) + transform.position;
+        sprite.transform.Rotate(rotation);
+    }
+
+    public void AddTrash(int amount) {
+        if (amount > 0) {
+            text = GameObject.FindObjectOfType<Text>();
+            text.text = "Pelaajalle " + pc.playerId + "\non tulossa \n" + amount + " roskaa";
+            //        print("Pelaajalle " + pc.playerId + " roskaa tulossa " + amount);
+        }
+        incomingTrash += amount;
+        // kerro paljonko tulossa roskaa
+    }
+
+    void PlaceOwnTrash() {
+        int trash = incomingTrash;
+
+        if (trash > nX) {
+            trash = nX;
+        }
+        incomingTrash -= trash;
+        for (int i = 0; i < trash; i++) {
+            var i2 = (nextTrash + i) % nX;
+            if (grid[i2][nY - 1] == PuyoType.None) {
+
+                grid[i2][nY - 1] = PuyoType.Trash;
+                var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
+                float worldX = -(nX - 1) / 2f * gridDistance + i2 * gridDistance;
+                float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
+                g3.transform.position = new Vector3(worldX, worldY) + transform.position;
+                sprites[i2][nY - 1] = g3;
+            } else {
+                gm.GameOver(pc.playerId);
+                return;
+            }
+        }
+        nextTrash = (nextTrash + trash) % nX;
+    }
+
     public IEnumerator DropMatchRemove() { //Pudotetaan tarvittaessa puyot, etsitään ryhmät ja poistetaan 4 tai enemmän samaa puyoa ryhmät.
         int trashFactor = 1; //roskakerroin
         int trash = 0; // roskaa kierroksella
@@ -127,42 +179,8 @@ public class PlayerGrid : MonoBehaviour {
         yield return null;
 
     }
-    public void AddTrash(int amount) {
-        if (amount > 0) {
-            text = GameObject.FindObjectOfType<Text>();
-            text.text = "Pelaajalle " + pc.playerId + "\non tulossa \n" + amount + " roskaa";
-            //        print("Pelaajalle " + pc.playerId + " roskaa tulossa " + amount);
-        }
-        incomingTrash += amount;
-        // kerro paljonko tulossa roskaa
-    }
-    void PlaceOwnTrash() {
-        int trash = incomingTrash;
 
-        if (trash > nX) {
-            trash = nX;
-        }
-        incomingTrash -= trash;
-        for (int i = 0; i < trash; i++) {
-            var i2 = (nextTrash + i) % nX;
-            if (grid[i2][nY - 1] == PuyoType.None) {
-               
-                grid[i2][nY - 1] = PuyoType.Trash;
-                var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
-                float worldX = -(nX - 1) / 2f * gridDistance + i2 * gridDistance;
-                float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
-                g3.transform.position = new Vector3(worldX, worldY) + transform.position;
-                sprites[i2][nY - 1] = g3;
-            }
-            else {
-                gm.GameOver(pc.playerId);
-                return;
-            }
-        }
-        nextTrash = (nextTrash + trash) % nX;
-    }
-
-    //Katja, kesken
+    //Katjan
     public PuyoDropStatus DropPuyos() {
         //löytää pudotettavat puyot
         for (int x = 0; x < nX; x++) {
@@ -205,14 +223,6 @@ public class PlayerGrid : MonoBehaviour {
         else if (found) return PuyoDropStatus.Drop;
         else return PuyoDropStatus.None;
 
-    }
-
-
-    public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
-        float worldX = -(nX - 1) / 2f * gridDistance + gridX * gridDistance;
-        float worldY = -(nY - 1) / 2f * gridDistance + gridY * gridDistance;
-
-        Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
     }
 
     List<List<Vector2>> FindPuyoGroups() {
@@ -326,18 +336,5 @@ public class PlayerGrid : MonoBehaviour {
             GO.transform.position = Vector3.Lerp(oldPlace, newPlace, Mathf.Clamp01(t / dropTime));
             yield return null;
         }
-    }
-
-    void PlaceBridge(int x, int y, GameObject sprite, Vector3 rotation) {
-        float worldX = -(nX - 1) / 2f * gridDistance + x * gridDistance;
-        float worldY = -(nY - 1) / 2f * gridDistance + x * gridDistance;
-
-        Instantiate(sprite);
-        sprite.transform.position = new Vector3(worldX, worldY) + transform.position;
-        sprite.transform.Rotate(rotation);
-    }
-
-    void AutomatedBridgeConstructionSubroutine() {
-
     }
 }
