@@ -305,6 +305,33 @@ public class PlayerGrid : MonoBehaviour {
                 sprites[(int)vector.x][(int)vector.y] = null;
                 Animator animator = GO.GetComponent<Animator>();
                 animator.Play("Destruction");
+
+                //When we destroy a block we should check if we can destroy a trash block next to it
+                if(vector.x - 1 >= 0 && grid[(int)vector.x - 1][(int)vector.y] == PuyoType.Trash ) {
+                    GameObject trash = sprites[(int)vector.x - 1][(int)vector.y];
+                    grid[(int)vector.x - 1][(int)vector.y] = PuyoType.None;
+                    sprites[(int)vector.x - 1][(int)vector.y] = null;
+                    Destroy(trash);
+                }
+                if (vector.x + 1 < nX && grid[(int)vector.x + 1][(int)vector.y] == PuyoType.Trash) {
+                    GameObject trash = sprites[(int)vector.x + 1][(int)vector.y];
+                    grid[(int)vector.x + 1][(int)vector.y] = PuyoType.None;
+                    sprites[(int)vector.x + 1][(int)vector.y] = null;
+                    Destroy(trash);
+                }
+                if (vector.y - 1 >= 0 && grid[(int)vector.x][(int)vector.y - 1] == PuyoType.Trash) {
+                    GameObject trash = sprites[(int)vector.x][(int)vector.y - 1];
+                    grid[(int)vector.x][(int)vector.y - 1] = PuyoType.None;
+                    sprites[(int)vector.x][(int)vector.y - 1] = null;
+                    Destroy(trash);
+                }
+                if (vector.y + 1 < nY && grid[(int)vector.x][(int)vector.y + 1] == PuyoType.Trash) {
+                    GameObject trash = sprites[(int)vector.x][(int)vector.y + 1];
+                    grid[(int)vector.x][(int)vector.y + 1] = PuyoType.None;
+                    sprites[(int)vector.x][(int)vector.y + 1] = null;
+                    Destroy(trash);
+                }
+
                 Destroy(GO, destroyDelay);
                 group.RemoveAt(0);
                 grid[(int)vector.x][(int)vector.y] = PuyoType.None;
