@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour {
     public int playerId;
     PuyoType spawnType1, spawnType2;
 
+    float P1PadAxis1, P1PadAxis2;
+    float P2PadAxis1, P2PadAxis2;
+
+
     //the falling test sprite
     GameObject g1, g2;
 
@@ -41,36 +45,46 @@ public class PlayerController : MonoBehaviour {
             g1 = generator.InstantiatePuyoSprite(spawnType1);
             g2 = generator.InstantiatePuyoSprite(spawnType2);
         }
+        var P1PadHorizontal = Input.GetAxisRaw("P1PadHorizontal");
+        var P1PadVertical = Input.GetAxisRaw("P1PadVertical");
+        var P2PadHorizontal = Input.GetAxisRaw("P1PadHorizontal");
+        var P2PadVertical = Input.GetAxisRaw("P1PadVertical");
 
         // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja paikkojen vaihto
-        if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
+        if (P1PadHorizontal < 0 && P1PadAxis1 != P1PadHorizontal &&
+            spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
             spawnX2 = spawnX2 - 1;
         }
-        if (Input.GetButtonDown("p1right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 1) {
+        if (P1PadHorizontal > 0 && P1PadAxis1 != P1PadHorizontal && 
+            spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 1) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 + 1;
             spawnX2 = spawnX2 + 1;
         }
-        if (Input.GetButtonDown("p1down") && playerId == 1) {
+        if (P1PadVertical > 0 && P1PadAxis2 != P1PadVertical
+            && playerId == 1) {
             velocity *= 5;
         }
         if (Input.GetButtonUp("p1down") && playerId == 1) {
             velocity = defaultVelocity;
         }
         // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
-        if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
+        if (P2PadHorizontal < 0 && P2PadAxis1 != P2PadHorizontal && 
+            spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 - 1;
             spawnX2 = spawnX2 - 1;
         }
-        if (Input.GetButtonDown("p2right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 2) {
+        if (P2PadHorizontal < 0 && P2PadAxis1 != P2PadHorizontal
+            && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 2) {
             audioScript.moveSource.Play();
             spawnX1 = spawnX1 + 1;
             spawnX2 = spawnX2 + 1;
         }
-        if (Input.GetButtonDown("p2down") && playerId == 2) {
+        if (P2PadVertical > 0 && P2PadAxis2 != P2PadVertical
+            && playerId == 2) {
             velocity *= 5;
         }
         if (Input.GetButtonUp("p2down") && playerId == 2) {
@@ -78,7 +92,8 @@ public class PlayerController : MonoBehaviour {
         }
 
         // kääntäminen
-        if (Input.GetButtonDown("p1swap") && playerId == 1) {
+        if (P1PadVertical < 0 && P1PadAxis2 != P1PadVertical 
+            && playerId == 1) {
             var tempSt1 = spawnType1;
             spawnType1 = spawnType2;
             spawnType2 = tempSt1;
@@ -86,7 +101,8 @@ public class PlayerController : MonoBehaviour {
             g1 = g2;
             g2 = tempG1;
         }
-        if (Input.GetButtonDown("p2swap") && playerId == 2) {
+        if (P2PadVertical < 0 && P2PadAxis2 != P2PadVertical
+            && playerId == 2) {
             var tempSt1 = spawnType1;
             spawnType1 = spawnType2;
             spawnType2 = tempSt1;
@@ -94,8 +110,10 @@ public class PlayerController : MonoBehaviour {
             g1 = g2;
             g2 = tempG1;
         }
-
-
+        P1PadAxis1 = P1PadHorizontal; //Muistetaan Padien Axis vanhat arvot
+        P2PadAxis1 = P2PadHorizontal; //Muistetaan Padien Axis vanhat arvot
+        P1PadAxis2 = P1PadVertical;
+        P2PadAxis2 = P2PadVertical;
 
 
         //Tarkistus onko alhaalla jotain edessä?
