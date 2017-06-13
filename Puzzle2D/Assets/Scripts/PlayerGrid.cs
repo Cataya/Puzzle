@@ -73,10 +73,11 @@ public class PlayerGrid : MonoBehaviour {
     }
 
     public void AddPuyo(int x, int y, PuyoType puyo, GameObject Sprite) { // Funktio, jossa lisätään taulukkoon tieto puyosta. (x-koordinaatti, y-koordinaatti, millainen puyo, millainen palikka)//(Teemu, Katja + Ykä)
-            grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
-            sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
-            PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
+        grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
+        sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
+        PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
 
+        //When we add puyos to the grid we might as well add bridges between them
     }
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
@@ -157,7 +158,7 @@ public class PlayerGrid : MonoBehaviour {
             trash += sum * trashFactor;
             trashFactor++;
             removedGroups = groupsToRemove.Count > 0; //Muuttujan arvo on tosi niin kauan kun listassa on tietueita
-            RemoveGroups(groupsToRemove); 
+            RemoveGroups(groupsToRemove);
             if (removedGroups)
                 yield return new WaitForSeconds(destroyDelay);
         } while (removedGroups); // Palataan do-kohtaan niin kauan, että poistettavia ryhmiä ei enään ole.
