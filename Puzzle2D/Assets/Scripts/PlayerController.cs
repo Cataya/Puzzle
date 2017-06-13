@@ -5,15 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     public PlayerGrid grid;
-    public GameManager gm; 
+    public GameManager gm;
     public Audio audioScript;
     public PuyoGenerator generator;
 
-    
+
     public float spawnX1, spawnX2;
     public float spawnY1, spawnY2;
     int defaultSpawnX1 = 2, defaultSpawnX2 = 3;
-    int defaultSpawnY1 = 11, defaultSpawnY2= 11;
+    int defaultSpawnY1 = 11, defaultSpawnY2 = 11;
     public float defaultVelocity = 2f;
     float velocity = 2f;
     public PlayerController other;
@@ -33,8 +33,7 @@ public class PlayerController : MonoBehaviour {
         //spawnaaminen        }
         if (g1 == null) {
             if (grid.grid[defaultSpawnX1][defaultSpawnY1] != PuyoType.None ||
-                grid.grid[defaultSpawnX2][defaultSpawnY2] != PuyoType.None )
-                {
+                grid.grid[defaultSpawnX2][defaultSpawnY2] != PuyoType.None) {
                 gm.GameOver(playerId);
                 return;
             }
@@ -46,74 +45,77 @@ public class PlayerController : MonoBehaviour {
             g2 = generator.InstantiatePuyoSprite(spawnType2);
         }
         var P1PadHorizontal = Input.GetAxisRaw("P1PadHorizontal");
-        var P1PadVertical = Input.GetAxisRaw("P1PadVertical");
-        var P2PadHorizontal = Input.GetAxisRaw("P1PadHorizontal");
-        var P2PadVertical = Input.GetAxisRaw("P1PadVertical");
+        var P1PadVertical   = Input.GetAxisRaw("P1PadVertical");
+        var P2PadHorizontal = Input.GetAxisRaw("P2PadHorizontal");
+        var P2PadVertical   = Input.GetAxisRaw("P2PadVertical");
+
+        print(P2PadHorizontal);
 
         // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja paikkojen vaihto
-        if (P1PadHorizontal < 0 && P1PadAxis1 != P1PadHorizontal &&
-            spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 - 1;
-            spawnX2 = spawnX2 - 1;
+        if (playerId == 1) {
+            if (P1PadHorizontal < 0 && P1PadAxis1 != P1PadHorizontal &&
+                spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2()) {
+                audioScript.moveSource.Play();
+                spawnX1 = spawnX1 - 1;
+                spawnX2 = spawnX2 - 1;
+            }
+            if (P1PadHorizontal > 0 && P1PadAxis1 != P1PadHorizontal &&
+                spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
+                audioScript.moveSource.Play();
+                spawnX1 = spawnX1 + 1;
+                spawnX2 = spawnX2 + 1;
+            }
+            if (P1PadVertical > 0) {
+                velocity = defaultVelocity * 5;
+            }
+            else {
+                velocity = defaultVelocity;
+            }
+            if (P1PadVertical < 0 && P1PadAxis2 != P1PadVertical) {
+                var tempSt1 = spawnType1;
+                spawnType1 = spawnType2;
+                spawnType2 = tempSt1;
+                var tempG1 = g1;
+                g1 = g2;
+                g2 = tempG1;
+            }
         }
-        if (P1PadHorizontal > 0 && P1PadAxis1 != P1PadHorizontal && 
-            spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 1) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 + 1;
-            spawnX2 = spawnX2 + 1;
-        }
-        if (P1PadVertical > 0 && P1PadAxis2 != P1PadVertical
-            && playerId == 1) {
-            velocity *= 5;
-        }
-        if (Input.GetButtonUp("p1down") && playerId == 1) {
-            velocity = defaultVelocity;
-        }
-        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
-        if (P2PadHorizontal < 0 && P2PadAxis1 != P2PadHorizontal && 
-            spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 - 1;
-            spawnX2 = spawnX2 - 1;
-        }
-        if (P2PadHorizontal < 0 && P2PadAxis1 != P2PadHorizontal
-            && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 2) {
-            audioScript.moveSource.Play();
-            spawnX1 = spawnX1 + 1;
-            spawnX2 = spawnX2 + 1;
-        }
-        if (P2PadVertical > 0 && P2PadAxis2 != P2PadVertical
-            && playerId == 2) {
-            velocity *= 5;
-        }
-        if (Input.GetButtonUp("p2down") && playerId == 2) {
-            velocity = defaultVelocity;
-        }
+        if (playerId == 2) {
+            // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
+            if (P2PadHorizontal < 0 && P2PadAxis1 != P2PadHorizontal &&
+                spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2()) {
+                audioScript.moveSource.Play();
+                spawnX1 = spawnX1 - 1;
+                spawnX2 = spawnX2 - 1;
+            }
+            if (P2PadHorizontal > 0 && P2PadAxis1 != P2PadHorizontal
+                && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2()) {
+                audioScript.moveSource.Play();
+                spawnX1 = spawnX1 + 1;
+                spawnX2 = spawnX2 + 1;
+            }
+            if (P2PadVertical > 0) {
+                velocity = defaultVelocity * 5;
+            }
+            else {
+                velocity = defaultVelocity;
 
-        // kääntäminen
-        if (P1PadVertical < 0 && P1PadAxis2 != P1PadVertical 
-            && playerId == 1) {
-            var tempSt1 = spawnType1;
-            spawnType1 = spawnType2;
-            spawnType2 = tempSt1;
-            var tempG1 = g1;
-            g1 = g2;
-            g2 = tempG1;
-        }
-        if (P2PadVertical < 0 && P2PadAxis2 != P2PadVertical
-            && playerId == 2) {
-            var tempSt1 = spawnType1;
-            spawnType1 = spawnType2;
-            spawnType2 = tempSt1;
-            var tempG1 = g1;
-            g1 = g2;
-            g2 = tempG1;
+                // kääntäminen
+            }
+            if (P2PadVertical < 0 && P2PadAxis2 != P2PadVertical) {
+                var tempSt1 = spawnType1;
+                spawnType1 = spawnType2;
+                spawnType2 = tempSt1;
+                var tempG1 = g1;
+                g1 = g2;
+                g2 = tempG1;
+            }
         }
         P1PadAxis1 = P1PadHorizontal; //Muistetaan Padien Axis vanhat arvot
         P2PadAxis1 = P2PadHorizontal; //Muistetaan Padien Axis vanhat arvot
         P1PadAxis2 = P1PadVertical;
         P2PadAxis2 = P2PadVertical;
+
 
 
         //Tarkistus onko alhaalla jotain edessä?
@@ -139,7 +141,7 @@ public class PlayerController : MonoBehaviour {
         if (!IsThereObstacleBelow1() || !IsThereObstacleBelow2()) {
             spawnY1 = spawnY1 - velocity * Time.deltaTime;
             spawnY2 = spawnY2 - velocity * Time.deltaTime; //Ohjataan spriten liikettä y-akselilla
-                                                           
+
             // piirtäminen (1)
             float worldX1 = -(grid.nX - 1) / 2f * grid.gridDistance + spawnX1 * grid.gridDistance;
             float worldY1 = -(grid.nY - 1) / 2f * grid.gridDistance + spawnY1 * grid.gridDistance;
