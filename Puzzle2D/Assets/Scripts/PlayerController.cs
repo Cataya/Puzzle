@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     public PlayerGrid grid;
-    public GameManager gm;
+    public GameManager gm; 
     public Audio audioScript;
     public PuyoGenerator generator;
 
