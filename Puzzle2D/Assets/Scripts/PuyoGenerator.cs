@@ -10,14 +10,17 @@ public class PuyoGenerator : MonoBehaviour {
     public int minimumInQueue = 5;
 
     public GameObject[] PuyoSpritePrefabs;
+    public GameObject[] BridgePrefabs;
 
     List<List<PuyoType>> p1puyos;
     List<List<PuyoType>> p2puyos;
 
     static PuyoType[] generatorPool = { PuyoType.Puyo1, PuyoType.Puyo2, PuyoType.Puyo3 };
 
+    PlayerGrid grid;
+
     void Awake() {
-        InitAtLevelStart();   
+        InitAtLevelStart();
     }
 
     public void InitAtLevelStart() {
@@ -54,5 +57,14 @@ public class PuyoGenerator : MonoBehaviour {
             p1puyos.Add(newPuyoSet);
             p2puyos.Add(copy);
         }
+    }
+
+    void PlaceBridge(int x, int y, GameObject sprite, Vector3 rotation) {
+        float worldX = -(grid.nX - 1) / 2f * grid.gridDistance + x * grid.gridDistance;
+        float worldY = -(grid.nY - 1) / 2f * grid.gridDistance + x * grid.gridDistance;
+
+        Instantiate(sprite);
+        sprite.transform.position = new Vector3(worldX, worldY) + transform.position;
+        sprite.transform.Rotate(rotation);
     }
 }
