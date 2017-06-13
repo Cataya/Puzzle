@@ -18,14 +18,14 @@ public class GameManager : MonoBehaviour {
             winner = 1;
         }
         text = GameObject.FindObjectOfType<Text>();
-        text.text = "Game Over!\n Player" + winner + "win\n press spacebar \n to restart game!";
+        text.text = "Game Over!\n Player" + winner + "win\n press Escape \n to restart game!";
         print("Game Over\n Winner is player " + winner );
         pc1.enabled = false;
         pc2.enabled = false;
         return;
     }
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             if (nextScene == "")//Jos seuraavaa kohtausta/kenttää ei ole määritelty
             {
                 nextScene = SceneManager.GetActiveScene().name;//Annetaan muuttujan nimeksi nykyisen kentän nimi
