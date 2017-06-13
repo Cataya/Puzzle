@@ -23,6 +23,8 @@ public class PlayerGrid : MonoBehaviour {
     public PlayerGrid otherPG;
     public Audio audioScript;
 
+    public GameObject[] BridgePrefabs;
+
 
     [HideInInspector]
     public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
@@ -34,6 +36,10 @@ public class PlayerGrid : MonoBehaviour {
 
     //public float y { get; private set; }
     //public float x { get; private set; }
+
+
+
+
 
     void Awake() {  //(Teemu, Katja + Ykä)
         grid = new List<List<PuyoType>>(); // Muodostetaan lista-taulukko, johon tullaan tallentamaan tieto, onko ruudussa Puyo, jos on niin millainen puyo
@@ -48,6 +54,19 @@ public class PlayerGrid : MonoBehaviour {
             sprites.Add(columnSprite); //Täytetään taulukko
         }
     }
+
+    void Update() {
+
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            DropMatchRemove();
+        }
+#endif
+    }
+
+
+
+
 
     void OnDrawGizmos() {
         Gizmos.DrawWireCube(transform.position, new Vector3(nX * gridDistance, nY * gridDistance));
@@ -195,19 +214,6 @@ public class PlayerGrid : MonoBehaviour {
 
         Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
     }
-    // Update is called once per frame
-    void Update() {
-        if (dropping.Count != 0) {
-            //print("erisuuri");
-
-        }
-
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            DropMatchRemove();
-        }
-#endif
-    }
 
     List<List<Vector2>> FindPuyoGroups() {
         List<List<Vector2>> groups = new List<List<Vector2>>(); //tehdään kaikista puyoista ryhmä, joihin lisätään viereiset puyot, mikäli ovat samanlaisia.
@@ -320,5 +326,18 @@ public class PlayerGrid : MonoBehaviour {
             GO.transform.position = Vector3.Lerp(oldPlace, newPlace, Mathf.Clamp01(t / dropTime));
             yield return null;
         }
+    }
+
+    void PlaceBridge(int x, int y, GameObject sprite, Vector3 rotation) {
+        float worldX = -(nX - 1) / 2f * gridDistance + x * gridDistance;
+        float worldY = -(nY - 1) / 2f * gridDistance + x * gridDistance;
+
+        Instantiate(sprite);
+        sprite.transform.position = new Vector3(worldX, worldY) + transform.position;
+        sprite.transform.Rotate(rotation);
+    }
+
+    void AutomatedBridgeConstructionSubroutine() {
+
     }
 }

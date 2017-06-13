@@ -17,7 +17,7 @@ public class PuyoGenerator : MonoBehaviour {
     static PuyoType[] generatorPool = { PuyoType.Puyo1, PuyoType.Puyo2, PuyoType.Puyo3 };
 
     void Awake() {
-        InitAtLevelStart();   
+        InitAtLevelStart();
     }
 
     public void InitAtLevelStart() {
