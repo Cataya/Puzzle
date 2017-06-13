@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class PlayerGrid : MonoBehaviour {
@@ -9,6 +10,7 @@ public class PlayerGrid : MonoBehaviour {
     public int nX; // Leveys
     public int nY; // Korkeus
     public float destroyDelay;
+    Text text;
 
     public float dropTime = 0.2f;
     public float gridDistance; //Ruutujen keskipisteiden etäisyys toisistaan
@@ -107,7 +109,11 @@ public class PlayerGrid : MonoBehaviour {
 
     }
     public void AddTrash(int amount) {
-        print("Pelaajalle " + pc.playerId + " roskaa tulossa " + amount);
+        if (amount > 0) {
+            text = GameObject.FindObjectOfType<Text>();
+            text.text = "Pelaajalle " + pc.playerId + "\non tulossa \n" + amount + " roskaa";
+            //        print("Pelaajalle " + pc.playerId + " roskaa tulossa " + amount);
+        }
         incomingTrash += amount;
         // kerro paljonko tulossa roskaa
     }
