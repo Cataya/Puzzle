@@ -23,14 +23,18 @@ public class PlayerGrid : MonoBehaviour {
     public PlayerGrid otherPG;
     public Audio audioScript;
 
-    public GameObject[] BridgePrefabs;
-
+    public GameObject[] bridgePrefabs;
 
     [HideInInspector]
     public List<List<PuyoType>> grid; // Lista-taulukko, johon merkitään millainen puyo on kussakin ruududussa
     [HideInInspector]
     public List<List<GameObject>> sprites; // Lista-taulukko, jossa hallinnoidaan mikä palikka on missäkin ruudussa.
     List<Vector2> dropping = new List<Vector2>(); //Lista pudotettavista palikoista
+
+    [HideInInspector]
+    public List<List<GameObject>> horizontalBridges;
+    [HideInInspector]
+    public List<List<GameObject>> verticalBridges;
 
     public enum PuyoDropStatus { None, Drop, DropAndStop };
 
@@ -52,6 +56,17 @@ public class PlayerGrid : MonoBehaviour {
             }
             grid.Add(column); //Täytetään taulukko
             sprites.Add(columnSprite); //Täytetään taulukko
+        }
+
+        horizontalBridges = new List<List<GameObject>>(nX - 1);
+        verticalBridges = new List<List<GameObject>>(nY - 1);
+        for(int x = 0; x < nX - 1; x++) {
+            List<GameObject> column = new List<GameObject>(nY);
+            horizontalBridges.Add(column);
+        }
+        for (int y = 0; y < nY - 1; y++) {
+            List<GameObject> column = new List<GameObject>(nY);
+            verticalBridges.Add(column);
         }
     }
 
@@ -76,8 +91,10 @@ public class PlayerGrid : MonoBehaviour {
         grid[x][y] = puyo; //Mihin koordinaatteihin lisätään tieto millainen puyo
         sprites[x][y] = Sprite; // Mihin koordinaatteihin lisätään millainen palikka
         PlacePuyo(x, y, Sprite); //Kutsutaan funktio, jolla piirretään palikka
+    }
 
-        //When we add puyos to the grid we might as well add bridges between them
+    public void UpdateBridges() {
+        //FindAdjacentPuyos()
     }
 
     public void PlacePuyo(int gridX, int gridY, GameObject Sprite) { // Lasketaan paikka, johon piirretään palikka //(Teemu, Katja + Ykä)
@@ -87,13 +104,8 @@ public class PlayerGrid : MonoBehaviour {
         Sprite.transform.position = new Vector3(worldX, worldY) + transform.position; //Piirretään palikka
     }
 
-    void PlaceBridge(int x, int y, GameObject sprite, Vector3 rotation) { //Place a bridge prefab anywhere in the world based on grid coordinates
-        float worldX = -(nX - 1) / 2f * gridDistance + x * gridDistance;
-        float worldY = -(nY - 1) / 2f * gridDistance + x * gridDistance;
+    public void AddBridge(int gridX, int gridY, GameObject bridge) {
 
-        Instantiate(sprite);
-        sprite.transform.position = new Vector3(worldX, worldY) + transform.position;
-        sprite.transform.Rotate(rotation);
     }
 
     public void AddTrash(int amount) {
@@ -120,7 +132,7 @@ public class PlayerGrid : MonoBehaviour {
                 var g3 = pc.generator.InstantiatePuyoSprite(PuyoType.Trash);
                 float worldX = -(nX - 1) / 2f * gridDistance + i2 * gridDistance;
                 float worldY = -(nY - 1) / 2f * gridDistance + pc.spawnY1 * gridDistance;
-                g3.transform.position = new Vector3(worldX, worldY) + (transform.position *1000000000);
+                g3.transform.position = new Vector3(worldX, worldY) + (transform.position * 1000000000);
                 sprites[i2][nY - 1] = g3;
             } else {
                 gm.GameOver(pc.playerId);
@@ -306,7 +318,7 @@ public class PlayerGrid : MonoBehaviour {
                 animator.Play("Destruction");
 
                 //When we destroy a block we should check if we can destroy a trash block next to it
-                if(vector.x - 1 >= 0 && grid[(int)vector.x - 1][(int)vector.y] == PuyoType.Trash ) {
+                if (vector.x - 1 >= 0 && grid[(int)vector.x - 1][(int)vector.y] == PuyoType.Trash) {
                     GameObject trash = sprites[(int)vector.x - 1][(int)vector.y];
                     grid[(int)vector.x - 1][(int)vector.y] = PuyoType.None;
                     sprites[(int)vector.x - 1][(int)vector.y] = null;
@@ -330,6 +342,8 @@ public class PlayerGrid : MonoBehaviour {
                     sprites[(int)vector.x][(int)vector.y + 1] = null;
                     Destroy(trash);
                 }
+
+                //We should also check if we should remove a bridge next to the destroyed block
 
                 Destroy(GO, destroyDelay);
                 group.RemoveAt(0);

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PuyoType { None, Trash, Puyo1, Puyo2, Puyo3 } // Millaisia puyoja meillä on olemassa
+public enum PuyoType { None = 0, Trash = 1, Puyo1 = 2, Puyo2 = 3, Puyo3 = 4 } // Millaisia puyoja meillä on olemassa
 
 public class PuyoGenerator : MonoBehaviour {
     public int minimumInQueue = 5;

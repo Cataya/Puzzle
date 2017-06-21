@@ -49,8 +49,6 @@ public class PlayerController : MonoBehaviour {
         var P2PadHorizontal = Input.GetAxisRaw("P2PadHorizontal");
         var P2PadVertical   = Input.GetAxisRaw("P2PadVertical");
 
-        print(P2PadHorizontal);
-
         // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja paikkojen vaihto
         if (playerId == 1) {
             if (P1PadHorizontal < 0 && P1PadAxis1 != P1PadHorizontal &&
