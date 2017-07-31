@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour {
             g1 = generator.InstantiatePuyoSprite(spawnType1);
             g2 = generator.InstantiatePuyoSprite(spawnType2);
         }
+        ///////////////////// **JOYSTICK** /////////////////////
         var P1PadHorizontal = Input.GetAxisRaw("P1PadHorizontal");
         var P1PadVertical   = Input.GetAxisRaw("P1PadVertical");
         var P2PadHorizontal = Input.GetAxisRaw("P2PadHorizontal");
@@ -113,6 +114,59 @@ public class PlayerController : MonoBehaviour {
         P2PadAxis1 = P2PadHorizontal; //Muistetaan Padien Axis vanhat arvot
         P1PadAxis2 = P1PadVertical;
         P2PadAxis2 = P2PadVertical;
+        ///////////////////// **KEYBOARD** ///////////////////// 
+        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja paikkojen vaihto
+        if (Input.GetButtonDown("p1left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 1) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 - 1;
+            spawnX2 = spawnX2 - 1;
+        }
+        if (Input.GetButtonDown("p1right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 1) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 + 1;
+            spawnX2 = spawnX2 + 1;
+        }
+        if (Input.GetButtonDown("p1down") && playerId == 1) {
+            velocity *= 5;
+        }
+        if (Input.GetButtonUp("p1down") && playerId == 1) {
+            velocity = defaultVelocity;
+        }
+        // Puyo1 siirto oikealle ja vasemmalle, kiihdytys ja kääntö
+        if (Input.GetButtonDown("p2left") && spawnX1 > 0 && !IsThereObstacleLeft1() && spawnX2 > 0 && !IsThereObstacleLeft2() && playerId == 2) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 - 1;
+            spawnX2 = spawnX2 - 1;
+        }
+        if (Input.GetButtonDown("p2right") && spawnX1 < grid.nX - 1 && !IsThereObstacleRight1() && spawnX2 < grid.nX - 1 && !IsThereObstacleRight2() && playerId == 2) {
+            audioScript.moveSource.Play();
+            spawnX1 = spawnX1 + 1;
+            spawnX2 = spawnX2 + 1;
+        }
+        if (Input.GetButtonDown("p2down") && playerId == 2) {
+            velocity *= 5;
+        }
+        if (Input.GetButtonUp("p2down") && playerId == 2) {
+            velocity = defaultVelocity;
+        }
+
+        // kääntäminen
+        if (Input.GetButtonDown("p1swap") && playerId == 1) {
+            var tempSt1 = spawnType1;
+            spawnType1 = spawnType2;
+            spawnType2 = tempSt1;
+            var tempG1 = g1;
+            g1 = g2;
+            g2 = tempG1;
+        }
+        if (Input.GetButtonDown("p2swap") && playerId == 2) {
+            var tempSt1 = spawnType1;
+            spawnType1 = spawnType2;
+            spawnType2 = tempSt1;
+            var tempG1 = g1;
+            g1 = g2;
+            g2 = tempG1;
+        }
 
 
 
